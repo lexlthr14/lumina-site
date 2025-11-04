@@ -1,0 +1,579 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <meta http-equiv="Content-Style-Type" content="text/css">
+  <title></title>
+  <meta name="Generator" content="Cocoa HTML Writer">
+  <meta name="CocoaVersion" content="2685.1">
+  <style type="text/css">
+    p.p1 {margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px Helvetica}
+    p.p2 {margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px Helvetica; min-height: 14.0px}
+  </style>
+</head>
+<body>
+<p class="p1">&lt;!DOCTYPE html&gt;</p>
+<p class="p1">&lt;html lang="en"&gt;</p>
+<p class="p1">&lt;head&gt;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;meta charset="UTF-8"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;meta name="viewport" content="width=device-width, initial-scale=1.0"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;title&gt;Lumina - Custom Software for NGOs&lt;/title&gt;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"&gt;&lt;/script&gt;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;style&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>* {</p>
+<p class="p1"><span class="Apple-converted-space">            </span>margin: 0;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>padding: 0;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>box-sizing: border-box;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">        </span>body {</p>
+<p class="p1"><span class="Apple-converted-space">            </span>font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>background: #0a0a0a;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>color: #e0e0e0;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>overflow-x: hidden;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">        </span>/* Header */</p>
+<p class="p1"><span class="Apple-converted-space">        </span>header {</p>
+<p class="p1"><span class="Apple-converted-space">            </span>position: fixed;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>top: 0;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>width: 100%;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>padding: 1.5rem 5%;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>background: rgba(10, 10, 10, 0.9);</p>
+<p class="p1"><span class="Apple-converted-space">            </span>backdrop-filter: blur(10px);</p>
+<p class="p1"><span class="Apple-converted-space">            </span>z-index: 100;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>border-bottom: 1px solid rgba(99, 102, 241, 0.1);</p>
+<p class="p1"><span class="Apple-converted-space">        </span>}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">        </span>.logo {</p>
+<p class="p1"><span class="Apple-converted-space">            </span>font-size: 1.5rem;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>font-weight: 700;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>color: #6366f1;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>letter-spacing: 2px;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">        </span>/* Hero Section */</p>
+<p class="p1"><span class="Apple-converted-space">        </span>.hero {</p>
+<p class="p1"><span class="Apple-converted-space">            </span>position: relative;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>height: 100vh;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>display: flex;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>flex-direction: column;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>justify-content: center;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>align-items: center;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>text-align: center;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>overflow: hidden;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">        </span>#prism-canvas {</p>
+<p class="p1"><span class="Apple-converted-space">            </span>position: absolute;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>top: 0;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>left: 0;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>width: 100%;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>height: 100%;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>z-index: 1;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">        </span>.hero-content {</p>
+<p class="p1"><span class="Apple-converted-space">            </span>position: relative;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>z-index: 2;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>max-width: 900px;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>padding: 0 2rem;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">        </span>h1 {</p>
+<p class="p1"><span class="Apple-converted-space">            </span>font-size: 3.5rem;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>font-weight: 800;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>margin-bottom: 1rem;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>background: linear-gradient(135deg, #6366f1 0%, #a855f7 100%);</p>
+<p class="p1"><span class="Apple-converted-space">            </span>-webkit-background-clip: text;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>-webkit-text-fill-color: transparent;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>background-clip: text;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>animation: fadeInUp 1s ease-out;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">        </span>.hero p {</p>
+<p class="p1"><span class="Apple-converted-space">            </span>font-size: 1.3rem;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>color: #a0a0a0;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>margin-bottom: 2rem;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>animation: fadeInUp 1s ease-out 0.2s backwards;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">        </span>/* Sections */</p>
+<p class="p1"><span class="Apple-converted-space">        </span>section {</p>
+<p class="p1"><span class="Apple-converted-space">            </span>padding: 6rem 5%;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>max-width: 1200px;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>margin: 0 auto;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">        </span>h2 {</p>
+<p class="p1"><span class="Apple-converted-space">            </span>font-size: 2.5rem;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>margin-bottom: 1rem;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>color: #6366f1;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">        </span>.section-description {</p>
+<p class="p1"><span class="Apple-converted-space">            </span>font-size: 1.1rem;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>color: #a0a0a0;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>margin-bottom: 3rem;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>line-height: 1.6;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">        </span>/* Apps Grid */</p>
+<p class="p1"><span class="Apple-converted-space">        </span>.apps-grid {</p>
+<p class="p1"><span class="Apple-converted-space">            </span>display: grid;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>grid-template-columns: repeat(auto-fit, minmax(450px, 1fr));</p>
+<p class="p1"><span class="Apple-converted-space">            </span>gap: 3rem;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>margin-top: 3rem;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">        </span>.app-card {</p>
+<p class="p1"><span class="Apple-converted-space">            </span>background: linear-gradient(135deg, rgba(99, 102, 241, 0.1) 0%, rgba(168, 85, 247, 0.1) 100%);</p>
+<p class="p1"><span class="Apple-converted-space">            </span>border: 1px solid rgba(99, 102, 241, 0.2);</p>
+<p class="p1"><span class="Apple-converted-space">            </span>border-radius: 16px;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>padding: 2rem;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>transition: all 0.3s ease;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>opacity: 0;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>transform: translateY(30px);</p>
+<p class="p1"><span class="Apple-converted-space">        </span>}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">        </span>.app-card.visible {</p>
+<p class="p1"><span class="Apple-converted-space">            </span>opacity: 1;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>transform: translateY(0);</p>
+<p class="p1"><span class="Apple-converted-space">        </span>}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">        </span>.app-card:hover {</p>
+<p class="p1"><span class="Apple-converted-space">            </span>transform: translateY(-5px);</p>
+<p class="p1"><span class="Apple-converted-space">            </span>border-color: rgba(99, 102, 241, 0.5);</p>
+<p class="p1"><span class="Apple-converted-space">            </span>box-shadow: 0 10px 40px rgba(99, 102, 241, 0.2);</p>
+<p class="p1"><span class="Apple-converted-space">        </span>}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">        </span>.app-card h3 {</p>
+<p class="p1"><span class="Apple-converted-space">            </span>font-size: 1.8rem;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>margin-bottom: 1rem;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>color: #e0e0e0;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">        </span>.app-card p {</p>
+<p class="p1"><span class="Apple-converted-space">            </span>color: #a0a0a0;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>line-height: 1.6;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>margin-bottom: 1.5rem;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">        </span>.video-link {</p>
+<p class="p1"><span class="Apple-converted-space">            </span>display: inline-flex;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>align-items: center;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>gap: 0.5rem;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>padding: 0.75rem 1.5rem;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>background: rgba(99, 102, 241, 0.2);</p>
+<p class="p1"><span class="Apple-converted-space">            </span>border: 1px solid #6366f1;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>border-radius: 8px;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>color: #6366f1;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>text-decoration: none;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>font-weight: 600;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>transition: all 0.3s ease;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">        </span>.video-link:hover {</p>
+<p class="p1"><span class="Apple-converted-space">            </span>background: #6366f1;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>color: #fff;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>transform: translateX(5px);</p>
+<p class="p1"><span class="Apple-converted-space">        </span>}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">        </span>.youtube-icon {</p>
+<p class="p1"><span class="Apple-converted-space">            </span>width: 20px;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>height: 20px;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">        </span>/* About Section */</p>
+<p class="p1"><span class="Apple-converted-space">        </span>.about {</p>
+<p class="p1"><span class="Apple-converted-space">            </span>background: rgba(99, 102, 241, 0.05);</p>
+<p class="p1"><span class="Apple-converted-space">            </span>border-radius: 16px;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>padding: 3rem;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>margin-top: 3rem;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">        </span>/* Contact Section */</p>
+<p class="p1"><span class="Apple-converted-space">        </span>.contact {</p>
+<p class="p1"><span class="Apple-converted-space">            </span>text-align: center;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">        </span>.email-link {</p>
+<p class="p1"><span class="Apple-converted-space">            </span>display: inline-block;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>font-size: 1.5rem;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>color: #6366f1;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>text-decoration: none;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>padding: 1rem 2rem;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>border: 2px solid #6366f1;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>border-radius: 8px;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>transition: all 0.3s ease;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>margin-top: 2rem;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">        </span>.email-link:hover {</p>
+<p class="p1"><span class="Apple-converted-space">            </span>background: #6366f1;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>color: #fff;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>transform: scale(1.05);</p>
+<p class="p1"><span class="Apple-converted-space">        </span>}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">        </span>/* Animations */</p>
+<p class="p1"><span class="Apple-converted-space">        </span>@keyframes fadeInUp {</p>
+<p class="p1"><span class="Apple-converted-space">            </span>from {</p>
+<p class="p1"><span class="Apple-converted-space">                </span>opacity: 0;</p>
+<p class="p1"><span class="Apple-converted-space">                </span>transform: translateY(30px);</p>
+<p class="p1"><span class="Apple-converted-space">            </span>}</p>
+<p class="p1"><span class="Apple-converted-space">            </span>to {</p>
+<p class="p1"><span class="Apple-converted-space">                </span>opacity: 1;</p>
+<p class="p1"><span class="Apple-converted-space">                </span>transform: translateY(0);</p>
+<p class="p1"><span class="Apple-converted-space">            </span>}</p>
+<p class="p1"><span class="Apple-converted-space">        </span>}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">        </span>/* Responsive */</p>
+<p class="p1"><span class="Apple-converted-space">        </span>@media (max-width: 768px) {</p>
+<p class="p1"><span class="Apple-converted-space">            </span>h1 {</p>
+<p class="p1"><span class="Apple-converted-space">                </span>font-size: 2.5rem;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">            </span>.hero p {</p>
+<p class="p1"><span class="Apple-converted-space">                </span>font-size: 1.1rem;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">            </span>h2 {</p>
+<p class="p1"><span class="Apple-converted-space">                </span>font-size: 2rem;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">            </span>.apps-grid {</p>
+<p class="p1"><span class="Apple-converted-space">                </span>grid-template-columns: 1fr;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">            </span>section {</p>
+<p class="p1"><span class="Apple-converted-space">                </span>padding: 4rem 5%;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>}</p>
+<p class="p1"><span class="Apple-converted-space">        </span>}</p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;/style&gt;</p>
+<p class="p1">&lt;/head&gt;</p>
+<p class="p1">&lt;body&gt;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;header&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;div class="logo"&gt;LUMINA&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;/header&gt;</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;section class="hero"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;canvas id="prism-canvas"&gt;&lt;/canvas&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;div class="hero-content"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>&lt;h1&gt;Custom Software Solutions for NGOs&lt;/h1&gt;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>&lt;p&gt;Building tools that help organizations evolve their services and reach more people&lt;/p&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;/section&gt;</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;section id="apps"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;h2&gt;Our Solutions&lt;/h2&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;p class="section-description"&gt;Each application is built to solve real-world challenges faced by organizations working to make a difference.&lt;/p&gt;</p>
+<p class="p2"><span class="Apple-converted-space">        </span></p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;div class="apps-grid"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>&lt;div class="app-card"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                </span>&lt;h3&gt;GBV Safety App&lt;/h3&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                </span>&lt;p&gt;Encrypted evidence vault, SOS alerts, secure reporting, and legal resources - all in one safe space. Designed to protect and empower survivors of gender-based violence.&lt;/p&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                </span>&lt;a href="YOUR_YOUTUBE_URL_HERE" class="video-link" target="_blank"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>&lt;svg class="youtube-icon" viewBox="0 0 24 24" fill="currentColor"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                        </span>&lt;path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>&lt;/svg&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>Watch Demo</p>
+<p class="p1"><span class="Apple-converted-space">                </span>&lt;/a&gt;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>&lt;/div&gt;</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">            </span>&lt;div class="app-card"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                </span>&lt;h3&gt;Food Transparency Scanner&lt;/h3&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                </span>&lt;p&gt;Scan barcodes for instant health recommendations. Breaks down complex ingredients into simple English, helping people make informed choices about what they eat.&lt;/p&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                </span>&lt;a href="YOUR_YOUTUBE_URL_HERE" class="video-link" target="_blank"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>&lt;svg class="youtube-icon" viewBox="0 0 24 24" fill="currentColor"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                        </span>&lt;path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>&lt;/svg&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>Watch Demo</p>
+<p class="p1"><span class="Apple-converted-space">                </span>&lt;/a&gt;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;/div&gt;</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;div class="about"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>&lt;h2&gt;About Lumina&lt;/h2&gt;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>&lt;p class="section-description"&gt;I build custom software for NGOs who need smart tools but can't afford traditional dev teams. Each solution is tailored to your organization's specific challenges.&lt;/p&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;/section&gt;</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;section id="contact" class="contact"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;h2&gt;Let's Work Together&lt;/h2&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;p class="section-description"&gt;If your organization needs a custom software solution, let's talk about how we can help.&lt;/p&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;a href="mailto:contact@lumina.co.za" class="email-link"&gt;contact@lumina.co.za&lt;/a&gt;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;/section&gt;</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;script&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>// Three.js Crystal Animation</p>
+<p class="p1"><span class="Apple-converted-space">        </span>const canvas = document.getElementById('prism-canvas');</p>
+<p class="p1"><span class="Apple-converted-space">        </span>const scene = new THREE.Scene();</p>
+<p class="p1"><span class="Apple-converted-space">        </span>const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);</p>
+<p class="p1"><span class="Apple-converted-space">        </span>const renderer = new THREE.WebGLRenderer({ canvas, alpha: true, antialias: true });</p>
+<p class="p2"><span class="Apple-converted-space">        </span></p>
+<p class="p1"><span class="Apple-converted-space">        </span>renderer.setSize(window.innerWidth, window.innerHeight);</p>
+<p class="p1"><span class="Apple-converted-space">        </span>camera.position.z = 5;</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">        </span>// Create multi-faceted crystal geometry</p>
+<p class="p1"><span class="Apple-converted-space">        </span>const crystalGroup = new THREE.Group();</p>
+<p class="p2"><span class="Apple-converted-space">        </span></p>
+<p class="p1"><span class="Apple-converted-space">        </span>// Main crystal (octahedron for gem-like appearance)</p>
+<p class="p1"><span class="Apple-converted-space">        </span>const mainGeometry = new THREE.OctahedronGeometry(1.8, 0);</p>
+<p class="p1"><span class="Apple-converted-space">        </span>const mainMaterial = new THREE.MeshPhongMaterial({</p>
+<p class="p1"><span class="Apple-converted-space">            </span>color: 0x6366f1,</p>
+<p class="p1"><span class="Apple-converted-space">            </span>emissive: 0x6366f1,</p>
+<p class="p1"><span class="Apple-converted-space">            </span>emissiveIntensity: 0.8,</p>
+<p class="p1"><span class="Apple-converted-space">            </span>transparent: true,</p>
+<p class="p1"><span class="Apple-converted-space">            </span>opacity: 0.7,</p>
+<p class="p1"><span class="Apple-converted-space">            </span>shininess: 100,</p>
+<p class="p1"><span class="Apple-converted-space">            </span>specular: 0xffffff</p>
+<p class="p1"><span class="Apple-converted-space">        </span>});</p>
+<p class="p2"><span class="Apple-converted-space">        </span></p>
+<p class="p1"><span class="Apple-converted-space">        </span>const mainCrystal = new THREE.Mesh(mainGeometry, mainMaterial);</p>
+<p class="p1"><span class="Apple-converted-space">        </span>crystalGroup.add(mainCrystal);</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">        </span>// Inner glowing core</p>
+<p class="p1"><span class="Apple-converted-space">        </span>const coreGeometry = new THREE.SphereGeometry(0.5, 32, 32);</p>
+<p class="p1"><span class="Apple-converted-space">        </span>const coreMaterial = new THREE.MeshBasicMaterial({</p>
+<p class="p1"><span class="Apple-converted-space">            </span>color: 0xa855f7,</p>
+<p class="p1"><span class="Apple-converted-space">            </span>transparent: true,</p>
+<p class="p1"><span class="Apple-converted-space">            </span>opacity: 0.9</p>
+<p class="p1"><span class="Apple-converted-space">        </span>});</p>
+<p class="p1"><span class="Apple-converted-space">        </span>const core = new THREE.Mesh(coreGeometry, coreMaterial);</p>
+<p class="p1"><span class="Apple-converted-space">        </span>crystalGroup.add(core);</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">        </span>// Light rays (cleaner, sharper)</p>
+<p class="p1"><span class="Apple-converted-space">        </span>const rayGroup = new THREE.Group();</p>
+<p class="p1"><span class="Apple-converted-space">        </span>for (let i = 0; i &lt; 6; i++) {</p>
+<p class="p1"><span class="Apple-converted-space">            </span>const rayGeometry = new THREE.CylinderGeometry(0.02, 0.001, 8, 8);</p>
+<p class="p1"><span class="Apple-converted-space">            </span>const rayMaterial = new THREE.MeshBasicMaterial({</p>
+<p class="p1"><span class="Apple-converted-space">                </span>color: 0xffffff,</p>
+<p class="p1"><span class="Apple-converted-space">                </span>transparent: true,</p>
+<p class="p1"><span class="Apple-converted-space">                </span>opacity: 0.6,</p>
+<p class="p1"><span class="Apple-converted-space">                </span>blending: THREE.AdditiveBlending</p>
+<p class="p1"><span class="Apple-converted-space">            </span>});</p>
+<p class="p1"><span class="Apple-converted-space">            </span>const ray = new THREE.Mesh(rayGeometry, rayMaterial);</p>
+<p class="p2"><span class="Apple-converted-space">            </span></p>
+<p class="p1"><span class="Apple-converted-space">            </span>// Position rays radiating outward</p>
+<p class="p1"><span class="Apple-converted-space">            </span>const angle = (i * Math.PI * 2) / 6;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>ray.rotation.z = angle;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>ray.position.x = Math.cos(angle) * 0.5;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>ray.position.y = Math.sin(angle) * 0.5;</p>
+<p class="p2"><span class="Apple-converted-space">            </span></p>
+<p class="p1"><span class="Apple-converted-space">            </span>rayGroup.add(ray);</p>
+<p class="p1"><span class="Apple-converted-space">        </span>}</p>
+<p class="p1"><span class="Apple-converted-space">        </span>crystalGroup.add(rayGroup);</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">        </span>// Outer wireframe for definition</p>
+<p class="p1"><span class="Apple-converted-space">        </span>const edges = new THREE.EdgesGeometry(mainGeometry);</p>
+<p class="p1"><span class="Apple-converted-space">        </span>const lineMaterial = new THREE.LineBasicMaterial({<span class="Apple-converted-space"> </span></p>
+<p class="p1"><span class="Apple-converted-space">            </span>color: 0xffffff,</p>
+<p class="p1"><span class="Apple-converted-space">            </span>transparent: true,</p>
+<p class="p1"><span class="Apple-converted-space">            </span>opacity: 0.6,</p>
+<p class="p1"><span class="Apple-converted-space">            </span>linewidth: 2</p>
+<p class="p1"><span class="Apple-converted-space">        </span>});</p>
+<p class="p1"><span class="Apple-converted-space">        </span>const wireframe = new THREE.LineSegments(edges, lineMaterial);</p>
+<p class="p1"><span class="Apple-converted-space">        </span>crystalGroup.add(wireframe);</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">        </span>// Add secondary smaller crystals orbiting</p>
+<p class="p1"><span class="Apple-converted-space">        </span>const smallCrystals = [];</p>
+<p class="p1"><span class="Apple-converted-space">        </span>for (let i = 0; i &lt; 3; i++) {</p>
+<p class="p1"><span class="Apple-converted-space">            </span>const smallGeo = new THREE.TetrahedronGeometry(0.3, 0);</p>
+<p class="p1"><span class="Apple-converted-space">            </span>const smallMat = new THREE.MeshPhongMaterial({</p>
+<p class="p1"><span class="Apple-converted-space">                </span>color: 0xa855f7,</p>
+<p class="p1"><span class="Apple-converted-space">                </span>emissive: 0xa855f7,</p>
+<p class="p1"><span class="Apple-converted-space">                </span>emissiveIntensity: 0.4,</p>
+<p class="p1"><span class="Apple-converted-space">                </span>transparent: true,</p>
+<p class="p1"><span class="Apple-converted-space">                </span>opacity: 0.5</p>
+<p class="p1"><span class="Apple-converted-space">            </span>});</p>
+<p class="p1"><span class="Apple-converted-space">            </span>const smallCrystal = new THREE.Mesh(smallGeo, smallMat);</p>
+<p class="p1"><span class="Apple-converted-space">            </span>smallCrystals.push(smallCrystal);</p>
+<p class="p1"><span class="Apple-converted-space">            </span>crystalGroup.add(smallCrystal);</p>
+<p class="p1"><span class="Apple-converted-space">        </span>}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">        </span>scene.add(crystalGroup);</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">        </span>// Particle system</p>
+<p class="p1"><span class="Apple-converted-space">        </span>const particleCount = 100;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>const particlesGeometry = new THREE.BufferGeometry();</p>
+<p class="p1"><span class="Apple-converted-space">        </span>const particlePositions = [];</p>
+<p class="p1"><span class="Apple-converted-space">        </span>const particleVelocities = [];</p>
+<p class="p2"><span class="Apple-converted-space">        </span></p>
+<p class="p1"><span class="Apple-converted-space">        </span>for (let i = 0; i &lt; particleCount; i++) {</p>
+<p class="p1"><span class="Apple-converted-space">            </span>particlePositions.push(</p>
+<p class="p1"><span class="Apple-converted-space">                </span>(Math.random() - 0.5) * 10,</p>
+<p class="p1"><span class="Apple-converted-space">                </span>(Math.random() - 0.5) * 10,</p>
+<p class="p1"><span class="Apple-converted-space">                </span>(Math.random() - 0.5) * 10</p>
+<p class="p1"><span class="Apple-converted-space">            </span>);</p>
+<p class="p1"><span class="Apple-converted-space">            </span>particleVelocities.push({</p>
+<p class="p1"><span class="Apple-converted-space">                </span>x: (Math.random() - 0.5) * 0.02,</p>
+<p class="p1"><span class="Apple-converted-space">                </span>y: (Math.random() - 0.5) * 0.02,</p>
+<p class="p1"><span class="Apple-converted-space">                </span>z: (Math.random() - 0.5) * 0.02</p>
+<p class="p1"><span class="Apple-converted-space">            </span>});</p>
+<p class="p1"><span class="Apple-converted-space">        </span>}</p>
+<p class="p2"><span class="Apple-converted-space">        </span></p>
+<p class="p1"><span class="Apple-converted-space">        </span>particlesGeometry.setAttribute('position', new THREE.Float32BufferAttribute(particlePositions, 3));</p>
+<p class="p2"><span class="Apple-converted-space">        </span></p>
+<p class="p1"><span class="Apple-converted-space">        </span>const particleMaterial = new THREE.PointsMaterial({</p>
+<p class="p1"><span class="Apple-converted-space">            </span>color: 0xffffff,</p>
+<p class="p1"><span class="Apple-converted-space">            </span>size: 0.05,</p>
+<p class="p1"><span class="Apple-converted-space">            </span>transparent: true,</p>
+<p class="p1"><span class="Apple-converted-space">            </span>opacity: 0.8,</p>
+<p class="p1"><span class="Apple-converted-space">            </span>blending: THREE.AdditiveBlending</p>
+<p class="p1"><span class="Apple-converted-space">        </span>});</p>
+<p class="p2"><span class="Apple-converted-space">        </span></p>
+<p class="p1"><span class="Apple-converted-space">        </span>const particles = new THREE.Points(particlesGeometry, particleMaterial);</p>
+<p class="p1"><span class="Apple-converted-space">        </span>scene.add(particles);</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">        </span>// Dynamic lighting with color shifts</p>
+<p class="p1"><span class="Apple-converted-space">        </span>const light1 = new THREE.PointLight(0x6366f1, 3, 100);</p>
+<p class="p1"><span class="Apple-converted-space">        </span>light1.position.set(5, 5, 5);</p>
+<p class="p1"><span class="Apple-converted-space">        </span>scene.add(light1);</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">        </span>const light2 = new THREE.PointLight(0xa855f7, 3, 100);</p>
+<p class="p1"><span class="Apple-converted-space">        </span>light2.position.set(-5, -5, 5);</p>
+<p class="p1"><span class="Apple-converted-space">        </span>scene.add(light2);</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">        </span>const light3 = new THREE.PointLight(0x3b82f6, 2, 100);</p>
+<p class="p1"><span class="Apple-converted-space">        </span>light3.position.set(0, 5, -5);</p>
+<p class="p1"><span class="Apple-converted-space">        </span>scene.add(light3);</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">        </span>const ambientLight = new THREE.AmbientLight(0x404040, 0.3);</p>
+<p class="p1"><span class="Apple-converted-space">        </span>scene.add(ambientLight);</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">        </span>// Mouse interaction</p>
+<p class="p1"><span class="Apple-converted-space">        </span>let mouseX = 0;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>let mouseY = 0;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>let targetX = 0;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>let targetY = 0;</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">        </span>document.addEventListener('mousemove', (e) =&gt; {</p>
+<p class="p1"><span class="Apple-converted-space">            </span>mouseX = (e.clientX / window.innerWidth) * 2 - 1;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>mouseY = -(e.clientY / window.innerHeight) * 2 + 1;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>});</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">        </span>// Animation</p>
+<p class="p1"><span class="Apple-converted-space">        </span>let time = 0;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>function animate() {</p>
+<p class="p1"><span class="Apple-converted-space">            </span>requestAnimationFrame(animate);</p>
+<p class="p2"><span class="Apple-converted-space">            </span></p>
+<p class="p1"><span class="Apple-converted-space">            </span>time += 0.01;</p>
+<p class="p2"><span class="Apple-converted-space">            </span></p>
+<p class="p1"><span class="Apple-converted-space">            </span>// Smooth mouse follow</p>
+<p class="p1"><span class="Apple-converted-space">            </span>targetX += (mouseX - targetX) * 0.05;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>targetY += (mouseY - targetY) * 0.05;</p>
+<p class="p2"><span class="Apple-converted-space">            </span></p>
+<p class="p1"><span class="Apple-converted-space">            </span>// Main crystal rotation with mouse influence</p>
+<p class="p1"><span class="Apple-converted-space">            </span>crystalGroup.rotation.x = time * 0.2 + targetY * 0.3;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>crystalGroup.rotation.y = time * 0.3 + targetX * 0.3;</p>
+<p class="p2"><span class="Apple-converted-space">            </span></p>
+<p class="p1"><span class="Apple-converted-space">            </span>// Rainbow color cycling using HSL (more vibrant)</p>
+<p class="p1"><span class="Apple-converted-space">            </span>const hue = (time * 0.08) % 1;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>const rainbowColor = new THREE.Color();</p>
+<p class="p1"><span class="Apple-converted-space">            </span>rainbowColor.setHSL(hue, 1.0, 0.5);</p>
+<p class="p2"><span class="Apple-converted-space">            </span></p>
+<p class="p1"><span class="Apple-converted-space">            </span>// Apply rainbow to main crystal and core</p>
+<p class="p1"><span class="Apple-converted-space">            </span>mainMaterial.color.copy(rainbowColor);</p>
+<p class="p1"><span class="Apple-converted-space">            </span>mainMaterial.emissive.copy(rainbowColor);</p>
+<p class="p1"><span class="Apple-converted-space">            </span>mainMaterial.emissiveIntensity = 1.0 + Math.sin(time * 2) * 0.5;</p>
+<p class="p2"><span class="Apple-converted-space">            </span></p>
+<p class="p1"><span class="Apple-converted-space">            </span>coreMaterial.color.copy(rainbowColor);</p>
+<p class="p2"><span class="Apple-converted-space">            </span></p>
+<p class="p1"><span class="Apple-converted-space">            </span>// Pulsating scale</p>
+<p class="p1"><span class="Apple-converted-space">            </span>const scale = 1 + Math.sin(time * 1.5) * 0.15;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>mainCrystal.scale.set(scale, scale, scale);</p>
+<p class="p2"><span class="Apple-converted-space">            </span></p>
+<p class="p1"><span class="Apple-converted-space">            </span>// Core glow pulse (more dramatic)</p>
+<p class="p1"><span class="Apple-converted-space">            </span>const coreScale = 1 + Math.sin(time * 2) * 0.5;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>core.scale.set(coreScale, coreScale, coreScale);</p>
+<p class="p2"><span class="Apple-converted-space">            </span></p>
+<p class="p1"><span class="Apple-converted-space">            </span>// Rotate light rays smoothly</p>
+<p class="p1"><span class="Apple-converted-space">            </span>rayGroup.rotation.z = time * 0.3;</p>
+<p class="p2"><span class="Apple-converted-space">            </span></p>
+<p class="p1"><span class="Apple-converted-space">            </span>// Pulse ray opacity and apply rainbow color</p>
+<p class="p1"><span class="Apple-converted-space">            </span>rayGroup.children.forEach((ray, i) =&gt; {</p>
+<p class="p1"><span class="Apple-converted-space">                </span>ray.material.color.copy(rainbowColor);</p>
+<p class="p1"><span class="Apple-converted-space">                </span>ray.material.opacity = 0.6 + Math.sin(time * 2 + i) * 0.3;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>});</p>
+<p class="p2"><span class="Apple-converted-space">            </span></p>
+<p class="p1"><span class="Apple-converted-space">            </span>// Orbit smaller crystals</p>
+<p class="p1"><span class="Apple-converted-space">            </span>smallCrystals.forEach((crystal, i) =&gt; {</p>
+<p class="p1"><span class="Apple-converted-space">                </span>const angle = time + (i * Math.PI * 2 / 3);</p>
+<p class="p1"><span class="Apple-converted-space">                </span>const radius = 3;</p>
+<p class="p1"><span class="Apple-converted-space">                </span>crystal.position.x = Math.cos(angle) * radius;</p>
+<p class="p1"><span class="Apple-converted-space">                </span>crystal.position.y = Math.sin(angle * 1.5) * radius * 0.5;</p>
+<p class="p1"><span class="Apple-converted-space">                </span>crystal.position.z = Math.sin(angle) * radius;</p>
+<p class="p1"><span class="Apple-converted-space">                </span>crystal.rotation.x = time * 2;</p>
+<p class="p1"><span class="Apple-converted-space">                </span>crystal.rotation.y = time * 3;</p>
+<p class="p2"><span class="Apple-converted-space">                </span></p>
+<p class="p1"><span class="Apple-converted-space">                </span>// Rainbow colors for orbiting crystals (offset from main)</p>
+<p class="p1"><span class="Apple-converted-space">                </span>const smallHue = (hue + i * 0.33) % 1;</p>
+<p class="p1"><span class="Apple-converted-space">                </span>const smallColor = new THREE.Color();</p>
+<p class="p1"><span class="Apple-converted-space">                </span>smallColor.setHSL(smallHue, 1.0, 0.5);</p>
+<p class="p1"><span class="Apple-converted-space">                </span>crystal.material.color.copy(smallColor);</p>
+<p class="p1"><span class="Apple-converted-space">                </span>crystal.material.emissive.copy(smallColor);</p>
+<p class="p1"><span class="Apple-converted-space">                </span>crystal.material.emissiveIntensity = 0.6;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>});</p>
+<p class="p2"><span class="Apple-converted-space">            </span></p>
+<p class="p1"><span class="Apple-converted-space">            </span>// Animate particles</p>
+<p class="p1"><span class="Apple-converted-space">            </span>const positions = particles.geometry.attributes.position.array;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>for (let i = 0; i &lt; particleCount; i++) {</p>
+<p class="p1"><span class="Apple-converted-space">                </span>const i3 = i * 3;</p>
+<p class="p1"><span class="Apple-converted-space">                </span>positions[i3] += particleVelocities[i].x;</p>
+<p class="p1"><span class="Apple-converted-space">                </span>positions[i3 + 1] += particleVelocities[i].y;</p>
+<p class="p1"><span class="Apple-converted-space">                </span>positions[i3 + 2] += particleVelocities[i].z;</p>
+<p class="p2"><span class="Apple-converted-space">                </span></p>
+<p class="p1"><span class="Apple-converted-space">                </span>// Reset particles that drift too far</p>
+<p class="p1"><span class="Apple-converted-space">                </span>if (Math.abs(positions[i3]) &gt; 5) particleVelocities[i].x *= -1;</p>
+<p class="p1"><span class="Apple-converted-space">                </span>if (Math.abs(positions[i3 + 1]) &gt; 5) particleVelocities[i].y *= -1;</p>
+<p class="p1"><span class="Apple-converted-space">                </span>if (Math.abs(positions[i3 + 2]) &gt; 5) particleVelocities[i].z *= -1;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>}</p>
+<p class="p1"><span class="Apple-converted-space">            </span>particles.geometry.attributes.position.needsUpdate = true;</p>
+<p class="p2"><span class="Apple-converted-space">            </span></p>
+<p class="p1"><span class="Apple-converted-space">            </span>// Rotate particle cloud slowly</p>
+<p class="p1"><span class="Apple-converted-space">            </span>particles.rotation.y = time * 0.1;</p>
+<p class="p2"><span class="Apple-converted-space">            </span></p>
+<p class="p1"><span class="Apple-converted-space">            </span>// Animate lights</p>
+<p class="p1"><span class="Apple-converted-space">            </span>light1.intensity = 3 + Math.sin(time * 2) * 1;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>light2.intensity = 3 + Math.sin(time * 2 + Math.PI) * 1;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>light3.intensity = 2 + Math.sin(time * 3) * 0.5;</p>
+<p class="p2"><span class="Apple-converted-space">            </span></p>
+<p class="p1"><span class="Apple-converted-space">            </span>renderer.render(scene, camera);</p>
+<p class="p1"><span class="Apple-converted-space">        </span>}</p>
+<p class="p1"><span class="Apple-converted-space">        </span>animate();</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">        </span>// Responsive resize</p>
+<p class="p1"><span class="Apple-converted-space">        </span>window.addEventListener('resize', () =&gt; {</p>
+<p class="p1"><span class="Apple-converted-space">            </span>camera.aspect = window.innerWidth / window.innerHeight;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>camera.updateProjectionMatrix();</p>
+<p class="p1"><span class="Apple-converted-space">            </span>renderer.setSize(window.innerWidth, window.innerHeight);</p>
+<p class="p1"><span class="Apple-converted-space">        </span>});</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">        </span>// Scroll animations</p>
+<p class="p1"><span class="Apple-converted-space">        </span>const observer = new IntersectionObserver((entries) =&gt; {</p>
+<p class="p1"><span class="Apple-converted-space">            </span>entries.forEach(entry =&gt; {</p>
+<p class="p1"><span class="Apple-converted-space">                </span>if (entry.isIntersecting) {</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>entry.target.classList.add('visible');</p>
+<p class="p1"><span class="Apple-converted-space">                </span>}</p>
+<p class="p1"><span class="Apple-converted-space">            </span>});</p>
+<p class="p1"><span class="Apple-converted-space">        </span>}, { threshold: 0.1 });</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">        </span>document.querySelectorAll('.app-card').forEach(card =&gt; {</p>
+<p class="p1"><span class="Apple-converted-space">            </span>observer.observe(card);</p>
+<p class="p1"><span class="Apple-converted-space">        </span>});</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">        </span>// Smooth scroll</p>
+<p class="p1"><span class="Apple-converted-space">        </span>document.querySelectorAll('a[href^="#"]').forEach(anchor =&gt; {</p>
+<p class="p1"><span class="Apple-converted-space">            </span>anchor.addEventListener('click', function (e) {</p>
+<p class="p1"><span class="Apple-converted-space">                </span>e.preventDefault();</p>
+<p class="p1"><span class="Apple-converted-space">                </span>const target = document.querySelector(this.getAttribute('href'));</p>
+<p class="p1"><span class="Apple-converted-space">                </span>if (target) {</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>target.scrollIntoView({ behavior: 'smooth' });</p>
+<p class="p1"><span class="Apple-converted-space">                </span>}</p>
+<p class="p1"><span class="Apple-converted-space">            </span>});</p>
+<p class="p1"><span class="Apple-converted-space">        </span>});</p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;/script&gt;</p>
+<p class="p1">&lt;/body&gt;</p>
+<p class="p1">&lt;/html&gt;</p>
+</body>
+</html>
