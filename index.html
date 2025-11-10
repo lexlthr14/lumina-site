@@ -19,7 +19,6 @@
             overflow-x: hidden;
         }
 
-        /* Header */
         header {
             position: fixed;
             top: 0;
@@ -38,7 +37,6 @@
             letter-spacing: 2px;
         }
 
-        /* Hero Section */
         .hero {
             position: relative;
             height: 100vh;
@@ -84,7 +82,6 @@
             animation: fadeInUp 1s ease-out 0.2s backwards;
         }
 
-        /* Sections */
         section {
             padding: 6rem 5%;
             max-width: 1200px;
@@ -104,7 +101,6 @@
             line-height: 1.6;
         }
 
-        /* Apps Grid */
         .apps-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
@@ -170,7 +166,6 @@
             height: 20px;
         }
 
-        /* About Section */
         .about {
             background: rgba(99, 102, 241, 0.05);
             border-radius: 16px;
@@ -178,7 +173,6 @@
             margin-top: 3rem;
         }
 
-        /* Contact Section */
         .contact {
             text-align: center;
         }
@@ -201,7 +195,6 @@
             transform: scale(1.05);
         }
 
-        /* Animations */
         @keyframes fadeInUp {
             from {
                 opacity: 0;
@@ -213,53 +206,21 @@
             }
         }
 
-        /* Responsive */
         @media (max-width: 768px) {
-            h1 {
-                font-size: 2.5rem;
-            }
-
-            .hero p {
-                font-size: 1.1rem;
-            }
-
-            h2 {
-                font-size: 2rem;
-            }
-
-            .apps-grid {
-                grid-template-columns: 1fr;
-            }
-
-            section {
-                padding: 4rem 5%;
-            }
-
-            .about {
-                padding: 2rem;
-            }
-
-            .email-link {
-                font-size: 1.2rem;
-            }
+            h1 { font-size: 2.5rem; }
+            .hero p { font-size: 1.1rem; }
+            h2 { font-size: 2rem; }
+            .apps-grid { grid-template-columns: 1fr; }
+            section { padding: 4rem 5%; }
+            .about { padding: 2rem; }
+            .email-link { font-size: 1.2rem; }
         }
 
         @media (max-width: 480px) {
-            h1 {
-                font-size: 2rem;
-            }
-
-            .hero p {
-                font-size: 1rem;
-            }
-
-            header {
-                padding: 1rem 5%;
-            }
-
-            .logo {
-                font-size: 1.2rem;
-            }
+            h1 { font-size: 2rem; }
+            .hero p { font-size: 1rem; }
+            header { padding: 1rem 5%; }
+            .logo { font-size: 1.2rem; }
         }
     </style>
 </head>
@@ -317,22 +278,22 @@
     </section>
 
     <script>
-        // Three.js Crystal Animation
+        // Three.js Scene Setup
         const canvas = document.getElementById('prism-canvas');
         const scene = new THREE.Scene();
         const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
-        const renderer = new THREE.WebGLRenderer({ canvas, alpha: true, antialias: true });
+        const renderer = new THREE.WebGLRenderer({ canvas: canvas, alpha: true, antialias: true });
         
         renderer.setSize(window.innerWidth, window.innerHeight);
         renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
         camera.position.z = 5;
 
-        // Create multi-faceted crystal geometry
+        // Main Crystal Group
         const crystalGroup = new THREE.Group();
         
-        // Main crystal (octahedron for gem-like appearance)
-        const mainGeometry = new THREE.OctahedronGeometry(1.8, 0);
-        const mainMaterial = new THREE.MeshPhongMaterial({
+        // Main Crystal
+        const mainGeo = new THREE.OctahedronGeometry(1.8, 0);
+        const mainMat = new THREE.MeshPhongMaterial({
             color: 0x6366f1,
             emissive: 0x6366f1,
             emissiveIntensity: 0.8,
@@ -341,33 +302,31 @@
             shininess: 100,
             specular: 0xffffff
         });
-        
-        const mainCrystal = new THREE.Mesh(mainGeometry, mainMaterial);
+        const mainCrystal = new THREE.Mesh(mainGeo, mainMat);
         crystalGroup.add(mainCrystal);
 
-        // Inner glowing core
-        const coreGeometry = new THREE.SphereGeometry(0.5, 32, 32);
-        const coreMaterial = new THREE.MeshBasicMaterial({
+        // Inner Core
+        const coreGeo = new THREE.SphereGeometry(0.5, 32, 32);
+        const coreMat = new THREE.MeshBasicMaterial({
             color: 0xa855f7,
             transparent: true,
             opacity: 0.9
         });
-        const core = new THREE.Mesh(coreGeometry, coreMaterial);
+        const core = new THREE.Mesh(coreGeo, coreMat);
         crystalGroup.add(core);
 
-        // Outer wireframe
-        const edges = new THREE.EdgesGeometry(mainGeometry);
-        const lineMaterial = new THREE.LineBasicMaterial({ 
+        // Wireframe
+        const edges = new THREE.EdgesGeometry(mainGeo);
+        const lineMat = new THREE.LineBasicMaterial({ 
             color: 0xffffff,
             transparent: true,
             opacity: 0.6
         });
-        const wireframe = new THREE.LineSegments(edges, lineMaterial);
+        const wireframe = new THREE.LineSegments(edges, lineMat);
         crystalGroup.add(wireframe);
 
-        // Orbiting crystals with trails
-        const smallCrystals = [];
-        const trailSegments = 50;
+        // Orbiting Crystals
+        const orbitCrystals = [];
         const trails = [];
         
         for (let i = 0; i < 3; i++) {
@@ -380,85 +339,80 @@
                 opacity: 0.5
             });
             const smallCrystal = new THREE.Mesh(smallGeo, smallMat);
-            smallCrystals.push(smallCrystal);
+            orbitCrystals.push(smallCrystal);
             crystalGroup.add(smallCrystal);
             
-            // Create trail for each orbiting crystal
-            const trailPositions = new Float32Array(trailSegments * 3);
-            const trailGeometry = new THREE.BufferGeometry();
-            trailGeometry.setAttribute('position', new THREE.BufferAttribute(trailPositions, 3));
+            // Trail
+            const trailGeo = new THREE.BufferGeometry();
+            const trailPositions = new Float32Array(50 * 3);
+            trailGeo.setAttribute('position', new THREE.BufferAttribute(trailPositions, 3));
             
-            const trailMaterial = new THREE.LineBasicMaterial({
+            const trailMat = new THREE.LineBasicMaterial({
                 color: 0xa855f7,
                 transparent: true,
-                opacity: 0.6,
-                linewidth: 2
+                opacity: 0.6
             });
             
-            const trail = new THREE.Line(trailGeometry, trailMaterial);
+            const trailLine = new THREE.Line(trailGeo, trailMat);
+            scene.add(trailLine);
+            
             trails.push({
-                line: trail,
-                positions: [],
-                maxLength: trailSegments
+                line: trailLine,
+                positions: []
             });
-            scene.add(trail);
         }
 
-        // Floating geometric shapes
+        // Floating Shapes
         const floatingShapes = [];
-        const shapeTypes = [
-            { geo: new THREE.BoxGeometry(0.4, 0.4, 0.4), count: 4 },
-            { geo: new THREE.TetrahedronGeometry(0.3, 0), count: 4 },
-            { geo: new THREE.OctahedronGeometry(0.3, 0), count: 4 }
+        const shapeGeos = [
+            new THREE.BoxGeometry(0.4, 0.4, 0.4),
+            new THREE.TetrahedronGeometry(0.3, 0),
+            new THREE.OctahedronGeometry(0.3, 0)
         ];
         
-        shapeTypes.forEach((shapeType, typeIndex) => {
-            for (let i = 0; i < shapeType.count; i++) {
-                const shapeMat = new THREE.MeshPhongMaterial({
-                    color: 0x6366f1,
-                    emissive: 0x6366f1,
-                    emissiveIntensity: 0.3,
-                    transparent: true,
-                    opacity: 0.4,
-                    shininess: 80
-                });
-                const shape = new THREE.Mesh(shapeType.geo, shapeMat);
-                
-                // Random initial position
-                const radius = 4 + Math.random() * 3;
-                const theta = Math.random() * Math.PI * 2;
-                const phi = Math.random() * Math.PI;
-                
-                shape.position.x = radius * Math.sin(phi) * Math.cos(theta);
-                shape.position.y = radius * Math.sin(phi) * Math.sin(theta);
-                shape.position.z = radius * Math.cos(phi);
-                
-                // Store animation parameters
-                shape.userData = {
-                    baseRadius: radius,
-                    speed: 0.2 + Math.random() * 0.3,
-                    offset: Math.random() * Math.PI * 2,
-                    rotationSpeed: {
-                        x: (Math.random() - 0.5) * 0.02,
-                        y: (Math.random() - 0.5) * 0.02,
-                        z: (Math.random() - 0.5) * 0.02
-                    }
-                };
-                
-                floatingShapes.push(shape);
-                scene.add(shape);
-            }
-        });
+        for (let i = 0; i < 12; i++) {
+            const geoIndex = Math.floor(i / 4);
+            const shapeMat = new THREE.MeshPhongMaterial({
+                color: 0x6366f1,
+                emissive: 0x6366f1,
+                emissiveIntensity: 0.3,
+                transparent: true,
+                opacity: 0.4,
+                shininess: 80
+            });
+            const shape = new THREE.Mesh(shapeGeos[geoIndex], shapeMat);
+            
+            const r = 4 + Math.random() * 3;
+            const theta = Math.random() * Math.PI * 2;
+            const phi = Math.random() * Math.PI;
+            
+            shape.position.x = r * Math.sin(phi) * Math.cos(theta);
+            shape.position.y = r * Math.sin(phi) * Math.sin(theta);
+            shape.position.z = r * Math.cos(phi);
+            
+            shape.userData = {
+                radius: r,
+                speed: 0.2 + Math.random() * 0.3,
+                offset: Math.random() * Math.PI * 2,
+                rotSpeed: {
+                    x: (Math.random() - 0.5) * 0.02,
+                    y: (Math.random() - 0.5) * 0.02,
+                    z: (Math.random() - 0.5) * 0.02
+                }
+            };
+            
+            floatingShapes.push(shape);
+            scene.add(shape);
+        }
 
         scene.add(crystalGroup);
 
-        // Particle system
-        const particleCount = 100;
-        const particlesGeometry = new THREE.BufferGeometry();
+        // Particles
+        const particleGeo = new THREE.BufferGeometry();
         const particlePositions = [];
         const particleVelocities = [];
         
-        for (let i = 0; i < particleCount; i++) {
+        for (let i = 0; i < 100; i++) {
             particlePositions.push(
                 (Math.random() - 0.5) * 10,
                 (Math.random() - 0.5) * 10,
@@ -471,9 +425,9 @@
             });
         }
         
-        particlesGeometry.setAttribute('position', new THREE.Float32BufferAttribute(particlePositions, 3));
+        particleGeo.setAttribute('position', new THREE.Float32BufferAttribute(particlePositions, 3));
         
-        const particleMaterial = new THREE.PointsMaterial({
+        const particleMat = new THREE.PointsMaterial({
             color: 0xffffff,
             size: 0.05,
             transparent: true,
@@ -481,10 +435,10 @@
             blending: THREE.AdditiveBlending
         });
         
-        const particles = new THREE.Points(particlesGeometry, particleMaterial);
+        const particles = new THREE.Points(particleGeo, particleMat);
         scene.add(particles);
 
-        // Dynamic lighting
+        // Lights
         const light1 = new THREE.PointLight(0x6366f1, 3, 100);
         light1.position.set(5, 5, 5);
         scene.add(light1);
@@ -500,7 +454,7 @@
         const ambientLight = new THREE.AmbientLight(0x404040, 0.3);
         scene.add(ambientLight);
 
-        // Mouse interaction
+        // Mouse Interaction
         let mouseX = 0;
         let mouseY = 0;
         let targetX = 0;
@@ -511,51 +465,37 @@
             mouseY = -(e.clientY / window.innerHeight) * 2 + 1;
         });
 
-        // Animation loop
+        // Animation
         let time = 0;
+        
         function animate() {
             requestAnimationFrame(animate);
-            
             time += 0.01;
             
-            // Smooth mouse follow
             targetX += (mouseX - targetX) * 0.05;
             targetY += (mouseY - targetY) * 0.05;
             
-            // Main crystal rotation
             crystalGroup.rotation.x = time * 0.2 + targetY * 0.3;
             crystalGroup.rotation.y = time * 0.3 + targetX * 0.3;
             
-            // Rainbow color cycling
             const hue = (time * 0.08) % 1;
-            const rainbowColor = new THREE.Color();
-            rainbowColor.setHSL(hue, 1.0, 0.5);
+            const color = new THREE.Color();
+            color.setHSL(hue, 1.0, 0.5);
             
-            mainMaterial.color.copy(rainbowColor);
-            mainMaterial.emissive.copy(rainbowColor);
-            mainMaterial.emissiveIntensity = 1.0 + Math.sin(time * 2) * 0.5;
+            mainMat.color.copy(color);
+            mainMat.emissive.copy(color);
+            mainMat.emissiveIntensity = 1.0 + Math.sin(time * 2) * 0.5;
             
-            coreMaterial.color.copy(rainbowColor);
+            coreMat.color.copy(color);
             
-            // Pulsating scale
             const scale = 1 + Math.sin(time * 1.5) * 0.15;
             mainCrystal.scale.set(scale, scale, scale);
             
-            // Core pulse
             const coreScale = 1 + Math.sin(time * 2) * 0.5;
             core.scale.set(coreScale, coreScale, coreScale);
             
-            // Rotate rays
-            rayGroup.rotation.z = time * 0.3;
-            
-            // Ray effects
-            rayGroup.children.forEach((ray, i) => {
-                ray.material.color.copy(rainbowColor);
-                ray.material.opacity = 0.6 + Math.sin(time * 2 + i) * 0.3;
-            });
-            
-            // Orbit smaller crystals with trails
-            smallCrystals.forEach((crystal, i) => {
+            // Orbit Crystals
+            orbitCrystals.forEach((crystal, i) => {
                 const angle = time + (i * Math.PI * 2 / 3);
                 const radius = 3;
                 crystal.position.x = Math.cos(angle) * radius;
@@ -570,7 +510,7 @@
                 crystal.material.color.copy(smallColor);
                 crystal.material.emissive.copy(smallColor);
                 
-                // Update trail
+                // Update Trail
                 const trail = trails[i];
                 trail.positions.push({
                     x: crystal.position.x,
@@ -578,7 +518,7 @@
                     z: crystal.position.z
                 });
                 
-                if (trail.positions.length > trail.maxLength) {
+                if (trail.positions.length > 50) {
                     trail.positions.shift();
                 }
                 
@@ -590,24 +530,22 @@
                 }
                 trail.line.geometry.attributes.position.needsUpdate = true;
                 trail.line.geometry.setDrawRange(0, trail.positions.length);
-                
                 trail.line.material.color.copy(smallColor);
             });
             
-            // Animate floating geometric shapes
+            // Floating Shapes
             floatingShapes.forEach((shape, i) => {
                 const t = time * shape.userData.speed + shape.userData.offset;
-                const radius = shape.userData.baseRadius + Math.sin(t * 0.5) * 0.5;
+                const r = shape.userData.radius + Math.sin(t * 0.5) * 0.5;
                 
-                shape.position.x = radius * Math.sin(t) * Math.cos(t * 0.7);
-                shape.position.y = radius * Math.sin(t * 0.8) * Math.cos(t * 0.5);
-                shape.position.z = radius * Math.cos(t) * Math.sin(t * 0.6);
+                shape.position.x = r * Math.sin(t) * Math.cos(t * 0.7);
+                shape.position.y = r * Math.sin(t * 0.8) * Math.cos(t * 0.5);
+                shape.position.z = r * Math.cos(t) * Math.sin(t * 0.6);
                 
-                shape.rotation.x += shape.userData.rotationSpeed.x;
-                shape.rotation.y += shape.userData.rotationSpeed.y;
-                shape.rotation.z += shape.userData.rotationSpeed.z;
+                shape.rotation.x += shape.userData.rotSpeed.x;
+                shape.rotation.y += shape.userData.rotSpeed.y;
+                shape.rotation.z += shape.userData.rotSpeed.z;
                 
-                // Rainbow color cycling for shapes
                 const shapeHue = (hue + i * 0.08) % 1;
                 const shapeColor = new THREE.Color();
                 shapeColor.setHSL(shapeHue, 1.0, 0.5);
@@ -616,9 +554,9 @@
                 shape.material.emissiveIntensity = 0.3 + Math.sin(time * 2 + i) * 0.2;
             });
             
-            // Animate particles
+            // Particles
             const positions = particles.geometry.attributes.position.array;
-            for (let i = 0; i < particleCount; i++) {
+            for (let i = 0; i < 100; i++) {
                 const i3 = i * 3;
                 positions[i3] += particleVelocities[i].x;
                 positions[i3 + 1] += particleVelocities[i].y;
@@ -631,16 +569,16 @@
             particles.geometry.attributes.position.needsUpdate = true;
             particles.rotation.y = time * 0.1;
             
-            // Animate lights
             light1.intensity = 3 + Math.sin(time * 2) * 1;
             light2.intensity = 3 + Math.sin(time * 2 + Math.PI) * 1;
             light3.intensity = 2 + Math.sin(time * 3) * 0.5;
             
             renderer.render(scene, camera);
         }
+        
         animate();
 
-        // Responsive resize
+        // Resize
         window.addEventListener('resize', () => {
             camera.aspect = window.innerWidth / window.innerHeight;
             camera.updateProjectionMatrix();
@@ -648,7 +586,7 @@
             renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
         });
 
-        // Scroll animations
+        // Scroll Animations
         const observer = new IntersectionObserver((entries) => {
             entries.forEach(entry => {
                 if (entry.isIntersecting) {
@@ -661,7 +599,7 @@
             observer.observe(card);
         });
 
-        // Smooth scroll
+        // Smooth Scroll
         document.querySelectorAll('a[href^="#"]').forEach(anchor => {
             anchor.addEventListener('click', function (e) {
                 e.preventDefault();
