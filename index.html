@@ -355,26 +355,7 @@
         const core = new THREE.Mesh(coreGeometry, coreMaterial);
         crystalGroup.add(core);
 
-        // Light rays
-        const rayGroup = new THREE.Group();
-        for (let i = 0; i < 6; i++) {
-            const rayGeometry = new THREE.CylinderGeometry(0.02, 0.001, 8, 8);
-            const rayMaterial = new THREE.MeshBasicMaterial({
-                color: 0xffffff,
-                transparent: true,
-                opacity: 0.6,
-                blending: THREE.AdditiveBlending
-            });
-            const ray = new THREE.Mesh(rayGeometry, rayMaterial);
-            
-            const angle = (i * Math.PI * 2) / 6;
-            ray.rotation.z = angle;
-            ray.position.x = Math.cos(angle) * 0.5;
-            ray.position.y = Math.sin(angle) * 0.5;
-            
-            rayGroup.add(ray);
-        }
-        crystalGroup.add(rayGroup);
+
 
         // Outer wireframe
         const edges = new THREE.EdgesGeometry(mainGeometry);
@@ -430,11 +411,15 @@
             size: 0.05,
             transparent: true,
             opacity: 0.8,
-            blending: THREE.AdditiveBlending
+            blending: THREE.AdditiveBlending,
+            vertexColors: false
         });
         
         const particles = new THREE.Points(particlesGeometry, particleMaterial);
         scene.add(particles);
+
+        // Store reference to particle color for animation
+        const particleColor = new THREE.Color();
 
         // Dynamic lighting
         const light1 = new THREE.PointLight(0x6366f1, 3, 100);
@@ -497,14 +482,7 @@
             const coreScale = 1 + Math.sin(time * 2) * 0.5;
             core.scale.set(coreScale, coreScale, coreScale);
             
-            // Rotate rays
-            rayGroup.rotation.z = time * 0.3;
-            
-            // Ray effects
-            rayGroup.children.forEach((ray, i) => {
-                ray.material.color.copy(rainbowColor);
-                ray.material.opacity = 0.6 + Math.sin(time * 2 + i) * 0.3;
-            });
+
             
             // Orbit smaller crystals
             smallCrystals.forEach((crystal, i) => {
@@ -525,6 +503,11 @@
             
             // Animate particles
             const positions = particles.geometry.attributes.position.array;
+            
+            // Update particle color to match rainbow
+            particleColor.setHSL(hue, 1.0, 0.7);
+            particles.material.color.copy(particleColor);
+            
             for (let i = 0; i < particleCount; i++) {
                 const i3 = i * 3;
                 positions[i3] += particleVelocities[i].x;
