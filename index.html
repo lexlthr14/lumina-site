@@ -383,27 +383,6 @@
 
         scene.add(crystalGroup);
 
-        // Energy Rings
-        const rings = [];
-        for (let i = 0; i < 3; i++) {
-            const ringGeometry = new THREE.TorusGeometry(2, 0.02, 16, 100);
-            const ringMaterial = new THREE.MeshBasicMaterial({
-                color: 0x6366f1,
-                transparent: true,
-                opacity: 0,
-                blending: THREE.AdditiveBlending
-            });
-            const ring = new THREE.Mesh(ringGeometry, ringMaterial);
-            ring.userData = { 
-                active: false, 
-                scale: 0,
-                opacity: 0,
-                startTime: 0
-            };
-            rings.push(ring);
-            scene.add(ring);
-        }
-
         // Floating Geometric Shapes
         const floatingShapes = [];
         const shapeTypes = [
@@ -478,29 +457,6 @@
             scene.add(shard);
         }
 
-        // Orbital Trail system for small crystals
-        const trailSystems = [];
-        smallCrystals.forEach(() => {
-            const trailPositions = [];
-            const trailGeometry = new THREE.BufferGeometry();
-            const trailMaterial = new THREE.LineBasicMaterial({
-                color: 0xffffff,
-                transparent: true,
-                opacity: 0.5,
-                blending: THREE.AdditiveBlending
-            });
-            
-            // Initialize trail with 20 points
-            for (let i = 0; i < 20; i++) {
-                trailPositions.push(0, 0, 0);
-            }
-            
-            trailGeometry.setAttribute('position', new THREE.Float32BufferAttribute(trailPositions, 3));
-            const trail = new THREE.Line(trailGeometry, trailMaterial);
-            trailSystems.push({ trail, positions: trailPositions, index: 0 });
-            scene.add(trail);
-        });
-
         // Particle system
         const particleCount = 100;
         const particlesGeometry = new THREE.BufferGeometry();
@@ -565,7 +521,6 @@
 
         // Animation loop
         let time = 0;
-        let lastRingTime = 0;
         
         function animate() {
             requestAnimationFrame(animate);
@@ -599,7 +554,7 @@
             const coreScale = 1 + Math.sin(time * 2) * 0.5;
             core.scale.set(coreScale, coreScale, coreScale);
             
-            // Orbit smaller crystals with trails
+            // Orbit smaller crystals
             smallCrystals.forEach((crystal, i) => {
                 const angle = time + (i * Math.PI * 2 / 3);
                 const radius = 3;
@@ -614,16 +569,6 @@
                 smallColor.setHSL(smallHue, 1.0, 0.5);
                 crystal.material.color.copy(smallColor);
                 crystal.material.emissive.copy(smallColor);
-                
-                // Update orbital trail
-                const trailSystem = trailSystems[i];
-                const idx = trailSystem.index * 3;
-                trailSystem.positions[idx] = crystal.position.x;
-                trailSystem.positions[idx + 1] = crystal.position.y;
-                trailSystem.positions[idx + 2] = crystal.position.z;
-                trailSystem.index = (trailSystem.index + 1) % 20;
-                trailSystem.trail.geometry.attributes.position.needsUpdate = true;
-                trailSystem.trail.material.color.copy(smallColor);
             });
             
             // Animate floating shapes
@@ -660,44 +605,6 @@
                 shardColor.setHSL(shardHue, 1.0, 0.5);
                 shard.material.color.copy(shardColor);
                 shard.material.emissive.copy(shardColor);
-            });
-            
-            // Energy rings pulse effect (every 3 seconds)
-            if (time - lastRingTime > 3) {
-                rings.forEach((ring, i) => {
-                    if (!ring.userData.active) {
-                        setTimeout(() => {
-                            ring.userData.active = true;
-                            ring.userData.startTime = time;
-                            ring.userData.scale = 0;
-                            ring.userData.opacity = 1;
-                        }, i * 200);
-                    }
-                });
-                lastRingTime = time;
-            }
-            
-            // Animate active rings
-            rings.forEach(ring => {
-                if (ring.userData.active) {
-                    const elapsed = time - ring.userData.startTime;
-                    const progress = elapsed / 2; // 2 second animation
-                    
-                    if (progress < 1) {
-                        ring.userData.scale = progress * 3;
-                        ring.userData.opacity = 1 - progress;
-                        
-                        ring.scale.set(ring.userData.scale, ring.userData.scale, ring.userData.scale);
-                        ring.material.opacity = ring.userData.opacity;
-                        ring.material.color.copy(rainbowColor);
-                        
-                        ring.rotation.x = Math.PI / 2 + Math.sin(elapsed * 3) * 0.2;
-                        ring.rotation.y = elapsed * 2;
-                    } else {
-                        ring.userData.active = false;
-                        ring.material.opacity = 0;
-                    }
-                }
             });
             
             // Animate particles
