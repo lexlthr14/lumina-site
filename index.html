@@ -25,7 +25,7 @@
             top: 0;
             width: 100%;
             padding: 1.5rem 5%;
-            background: rgba(10, 10, 10, 0.9);
+            background: rgba(10, 10, 10, 0.95);
             backdrop-filter: blur(10px);
             z-index: 100;
             border-bottom: 1px solid rgba(99, 102, 241, 0.1);
@@ -107,8 +107,8 @@
         /* Apps Grid */
         .apps-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(450px, 1fr));
-            gap: 3rem;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
             margin-top: 3rem;
         }
 
@@ -234,6 +234,32 @@
             section {
                 padding: 4rem 5%;
             }
+
+            .about {
+                padding: 2rem;
+            }
+
+            .email-link {
+                font-size: 1.2rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            h1 {
+                font-size: 2rem;
+            }
+
+            .hero p {
+                font-size: 1rem;
+            }
+
+            header {
+                padding: 1rem 5%;
+            }
+
+            .logo {
+                font-size: 1.2rem;
+            }
         }
     </style>
 </head>
@@ -258,8 +284,8 @@
             <div class="app-card">
                 <h3>GBV Safety App</h3>
                 <p>Encrypted evidence vault, SOS alerts, secure reporting, and legal resources - all in one safe space. Designed to protect and empower survivors of gender-based violence.</p>
-                <a href="YOUR_YOUTUBE_URL_HERE" class="video-link" target="_blank">
-                    <svg class="youtube-icon" viewBox="0 0 24 24" fill="currentColor">
+                <a href="#" class="video-link" aria-label="Watch GBV Safety App demo">
+                    <svg class="youtube-icon" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
                         <path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/>
                     </svg>
                     Watch Demo
@@ -269,8 +295,8 @@
             <div class="app-card">
                 <h3>Food Transparency Scanner</h3>
                 <p>Scan barcodes for instant health recommendations. Breaks down complex ingredients into simple English, helping people make informed choices about what they eat.</p>
-                <a href="YOUR_YOUTUBE_URL_HERE" class="video-link" target="_blank">
-                    <svg class="youtube-icon" viewBox="0 0 24 24" fill="currentColor">
+                <a href="#" class="video-link" aria-label="Watch Food Scanner demo">
+                    <svg class="youtube-icon" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
                         <path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/>
                     </svg>
                     Watch Demo
@@ -298,6 +324,7 @@
         const renderer = new THREE.WebGLRenderer({ canvas, alpha: true, antialias: true });
         
         renderer.setSize(window.innerWidth, window.innerHeight);
+        renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
         camera.position.z = 5;
 
         // Create multi-faceted crystal geometry
@@ -328,7 +355,7 @@
         const core = new THREE.Mesh(coreGeometry, coreMaterial);
         crystalGroup.add(core);
 
-        // Light rays (cleaner, sharper)
+        // Light rays
         const rayGroup = new THREE.Group();
         for (let i = 0; i < 6; i++) {
             const rayGeometry = new THREE.CylinderGeometry(0.02, 0.001, 8, 8);
@@ -340,7 +367,6 @@
             });
             const ray = new THREE.Mesh(rayGeometry, rayMaterial);
             
-            // Position rays radiating outward
             const angle = (i * Math.PI * 2) / 6;
             ray.rotation.z = angle;
             ray.position.x = Math.cos(angle) * 0.5;
@@ -350,18 +376,17 @@
         }
         crystalGroup.add(rayGroup);
 
-        // Outer wireframe for definition
+        // Outer wireframe
         const edges = new THREE.EdgesGeometry(mainGeometry);
         const lineMaterial = new THREE.LineBasicMaterial({ 
             color: 0xffffff,
             transparent: true,
-            opacity: 0.6,
-            linewidth: 2
+            opacity: 0.6
         });
         const wireframe = new THREE.LineSegments(edges, lineMaterial);
         crystalGroup.add(wireframe);
 
-        // Add secondary smaller crystals orbiting
+        // Orbiting crystals
         const smallCrystals = [];
         for (let i = 0; i < 3; i++) {
             const smallGeo = new THREE.TetrahedronGeometry(0.3, 0);
@@ -411,7 +436,7 @@
         const particles = new THREE.Points(particlesGeometry, particleMaterial);
         scene.add(particles);
 
-        // Dynamic lighting with color shifts
+        // Dynamic lighting
         const light1 = new THREE.PointLight(0x6366f1, 3, 100);
         light1.position.set(5, 5, 5);
         scene.add(light1);
@@ -438,7 +463,7 @@
             mouseY = -(e.clientY / window.innerHeight) * 2 + 1;
         });
 
-        // Animation
+        // Animation loop
         let time = 0;
         function animate() {
             requestAnimationFrame(animate);
@@ -449,16 +474,15 @@
             targetX += (mouseX - targetX) * 0.05;
             targetY += (mouseY - targetY) * 0.05;
             
-            // Main crystal rotation with mouse influence
+            // Main crystal rotation
             crystalGroup.rotation.x = time * 0.2 + targetY * 0.3;
             crystalGroup.rotation.y = time * 0.3 + targetX * 0.3;
             
-            // Rainbow color cycling using HSL (more vibrant)
+            // Rainbow color cycling
             const hue = (time * 0.08) % 1;
             const rainbowColor = new THREE.Color();
             rainbowColor.setHSL(hue, 1.0, 0.5);
             
-            // Apply rainbow to main crystal and core
             mainMaterial.color.copy(rainbowColor);
             mainMaterial.emissive.copy(rainbowColor);
             mainMaterial.emissiveIntensity = 1.0 + Math.sin(time * 2) * 0.5;
@@ -469,14 +493,14 @@
             const scale = 1 + Math.sin(time * 1.5) * 0.15;
             mainCrystal.scale.set(scale, scale, scale);
             
-            // Core glow pulse (more dramatic)
+            // Core pulse
             const coreScale = 1 + Math.sin(time * 2) * 0.5;
             core.scale.set(coreScale, coreScale, coreScale);
             
-            // Rotate light rays smoothly
+            // Rotate rays
             rayGroup.rotation.z = time * 0.3;
             
-            // Pulse ray opacity and apply rainbow color
+            // Ray effects
             rayGroup.children.forEach((ray, i) => {
                 ray.material.color.copy(rainbowColor);
                 ray.material.opacity = 0.6 + Math.sin(time * 2 + i) * 0.3;
@@ -492,13 +516,11 @@
                 crystal.rotation.x = time * 2;
                 crystal.rotation.y = time * 3;
                 
-                // Rainbow colors for orbiting crystals (offset from main)
                 const smallHue = (hue + i * 0.33) % 1;
                 const smallColor = new THREE.Color();
                 smallColor.setHSL(smallHue, 1.0, 0.5);
                 crystal.material.color.copy(smallColor);
                 crystal.material.emissive.copy(smallColor);
-                crystal.material.emissiveIntensity = 0.6;
             });
             
             // Animate particles
@@ -509,14 +531,11 @@
                 positions[i3 + 1] += particleVelocities[i].y;
                 positions[i3 + 2] += particleVelocities[i].z;
                 
-                // Reset particles that drift too far
                 if (Math.abs(positions[i3]) > 5) particleVelocities[i].x *= -1;
                 if (Math.abs(positions[i3 + 1]) > 5) particleVelocities[i].y *= -1;
                 if (Math.abs(positions[i3 + 2]) > 5) particleVelocities[i].z *= -1;
             }
             particles.geometry.attributes.position.needsUpdate = true;
-            
-            // Rotate particle cloud slowly
             particles.rotation.y = time * 0.1;
             
             // Animate lights
@@ -533,6 +552,7 @@
             camera.aspect = window.innerWidth / window.innerHeight;
             camera.updateProjectionMatrix();
             renderer.setSize(window.innerWidth, window.innerHeight);
+            renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
         });
 
         // Scroll animations
