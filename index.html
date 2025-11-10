@@ -355,22 +355,6 @@
         const core = new THREE.Mesh(coreGeometry, coreMaterial);
         crystalGroup.add(core);
 
-        // Light rays emanating from crystal
-        const rayGroup = new THREE.Group();
-        for (let i = 0; i < 8; i++) {
-            const rayGeometry = new THREE.PlaneGeometry(0.1, 4);
-            const rayMaterial = new THREE.MeshBasicMaterial({
-                color: 0x6366f1,
-                transparent: true,
-                opacity: 0.4,
-                side: THREE.DoubleSide
-            });
-            const ray = new THREE.Mesh(rayGeometry, rayMaterial);
-            ray.rotation.z = (i * Math.PI) / 4;
-            rayGroup.add(ray);
-        }
-        crystalGroup.add(rayGroup);
-
         // Outer wireframe
         const edges = new THREE.EdgesGeometry(mainGeometry);
         const lineMaterial = new THREE.LineBasicMaterial({ 
