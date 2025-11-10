@@ -287,7 +287,7 @@
     <section id="contact" class="contact">
         <h2>Let's Work Together</h2>
         <p class="section-description">If your organization needs a custom software solution, let's talk about how we can help.</p>
-        <a href="mailto:contact@lumina.co.za" class="email-link">contact@lumina.co.za</a>
+        <a href="mailto:wothando@luminaholdings.co.za" class="email-link">wothando@luminaholdings.co.za</a>
     </section>
 
     <script>
@@ -308,9 +308,9 @@
         const mainMaterial = new THREE.MeshPhongMaterial({
             color: 0x6366f1,
             emissive: 0x6366f1,
-            emissiveIntensity: 0.5,
+            emissiveIntensity: 0.8,
             transparent: true,
-            opacity: 0.6,
+            opacity: 0.7,
             shininess: 100,
             specular: 0xffffff
         });
@@ -323,10 +323,32 @@
         const coreMaterial = new THREE.MeshBasicMaterial({
             color: 0xa855f7,
             transparent: true,
-            opacity: 0.8
+            opacity: 0.9
         });
         const core = new THREE.Mesh(coreGeometry, coreMaterial);
         crystalGroup.add(core);
+
+        // Light rays (cleaner, sharper)
+        const rayGroup = new THREE.Group();
+        for (let i = 0; i < 6; i++) {
+            const rayGeometry = new THREE.CylinderGeometry(0.02, 0.001, 8, 8);
+            const rayMaterial = new THREE.MeshBasicMaterial({
+                color: 0xffffff,
+                transparent: true,
+                opacity: 0.6,
+                blending: THREE.AdditiveBlending
+            });
+            const ray = new THREE.Mesh(rayGeometry, rayMaterial);
+            
+            // Position rays radiating outward
+            const angle = (i * Math.PI * 2) / 6;
+            ray.rotation.z = angle;
+            ray.position.x = Math.cos(angle) * 0.5;
+            ray.position.y = Math.sin(angle) * 0.5;
+            
+            rayGroup.add(ray);
+        }
+        crystalGroup.add(rayGroup);
 
         // Outer wireframe for definition
         const edges = new THREE.EdgesGeometry(mainGeometry);
@@ -379,10 +401,10 @@
         particlesGeometry.setAttribute('position', new THREE.Float32BufferAttribute(particlePositions, 3));
         
         const particleMaterial = new THREE.PointsMaterial({
-            color: 0x6366f1,
+            color: 0xffffff,
             size: 0.05,
             transparent: true,
-            opacity: 0.6,
+            opacity: 0.8,
             blending: THREE.AdditiveBlending
         });
         
@@ -431,20 +453,34 @@
             crystalGroup.rotation.x = time * 0.2 + targetY * 0.3;
             crystalGroup.rotation.y = time * 0.3 + targetX * 0.3;
             
+            // Rainbow color cycling using HSL (more vibrant)
+            const hue = (time * 0.08) % 1;
+            const rainbowColor = new THREE.Color();
+            rainbowColor.setHSL(hue, 1.0, 0.5);
+            
+            // Apply rainbow to main crystal and core
+            mainMaterial.color.copy(rainbowColor);
+            mainMaterial.emissive.copy(rainbowColor);
+            mainMaterial.emissiveIntensity = 1.0 + Math.sin(time * 2) * 0.5;
+            
+            coreMaterial.color.copy(rainbowColor);
+            
             // Pulsating scale
             const scale = 1 + Math.sin(time * 1.5) * 0.15;
             mainCrystal.scale.set(scale, scale, scale);
             
-            // Core glow pulse
-            core.scale.set(
-                1 + Math.sin(time * 2) * 0.3,
-                1 + Math.sin(time * 2) * 0.3,
-                1 + Math.sin(time * 2) * 0.3
-            );
+            // Core glow pulse (more dramatic)
+            const coreScale = 1 + Math.sin(time * 2) * 0.5;
+            core.scale.set(coreScale, coreScale, coreScale);
             
-            // Color shift
-            const hue = (time * 0.1) % 1;
-            mainMaterial.emissiveIntensity = 0.5 + Math.sin(time * 2) * 0.3;
+            // Rotate light rays smoothly
+            rayGroup.rotation.z = time * 0.3;
+            
+            // Pulse ray opacity and apply rainbow color
+            rayGroup.children.forEach((ray, i) => {
+                ray.material.color.copy(rainbowColor);
+                ray.material.opacity = 0.6 + Math.sin(time * 2 + i) * 0.3;
+            });
             
             // Orbit smaller crystals
             smallCrystals.forEach((crystal, i) => {
@@ -455,6 +491,14 @@
                 crystal.position.z = Math.sin(angle) * radius;
                 crystal.rotation.x = time * 2;
                 crystal.rotation.y = time * 3;
+                
+                // Rainbow colors for orbiting crystals (offset from main)
+                const smallHue = (hue + i * 0.33) % 1;
+                const smallColor = new THREE.Color();
+                smallColor.setHSL(smallHue, 1.0, 0.5);
+                crystal.material.color.copy(smallColor);
+                crystal.material.emissive.copy(smallColor);
+                crystal.material.emissiveIntensity = 0.6;
             });
             
             // Animate particles
