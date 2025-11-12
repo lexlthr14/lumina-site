@@ -19,7 +19,6 @@
             overflow-x: hidden;
         }
 
-        /* Header */
         header {
             position: fixed;
             top: 0;
@@ -38,7 +37,6 @@
             letter-spacing: 2px;
         }
 
-        /* Hero Section */
         .hero {
             position: relative;
             height: 100vh;
@@ -84,7 +82,6 @@
             animation: fadeInUp 1s ease-out 0.2s backwards;
         }
 
-        /* Sections */
         section {
             padding: 6rem 5%;
             max-width: 1200px;
@@ -104,7 +101,6 @@
             line-height: 1.6;
         }
 
-        /* Apps Grid */
         .apps-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
@@ -170,7 +166,6 @@
             height: 20px;
         }
 
-        /* About Section */
         .about {
             background: rgba(99, 102, 241, 0.05);
             border-radius: 16px;
@@ -178,7 +173,6 @@
             margin-top: 3rem;
         }
 
-        /* Contact Section */
         .contact {
             text-align: center;
         }
@@ -201,7 +195,6 @@
             transform: scale(1.05);
         }
 
-        /* Animations */
         @keyframes fadeInUp {
             from {
                 opacity: 0;
@@ -213,7 +206,6 @@
             }
         }
 
-        /* Responsive */
         @media (max-width: 768px) {
             h1 {
                 font-size: 2.5rem;
@@ -280,28 +272,8 @@
         <h2>Our Solutions</h2>
         <p class="section-description">Each application is built to solve real-world challenges faced by organisations working to make a difference.</p>
         
-        <div class="apps-grid">
-            <div class="app-card">
-                <h3>GBV Safety App</h3>
-                <p>Encrypted evidence vault, SOS alerts, secure reporting, and legal resources - all in one safe space. Designed to protect and empower survivors of gender-based violence.</p>
-                <a href="https://www.youtube.com/shorts/obar6YU03Iw" class="video-link" aria-label="Watch GBV Safety App demo">
-                    <svg class="youtube-icon" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
-                        <path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/>
-                    </svg>
-                    Watch Demo
-                </a>
-            </div>
-
-            <div class="app-card">
-                <h3>Food Transparency Scanner</h3>
-                <p>Scan barcodes for instant health recommendations. Breaks down complex ingredients into simple English, helping people make informed choices about what they eat.</p>
-                <a href="https://www.youtube.com/shorts/S-kYKuDZ5Lk" class="video-link" aria-label="Watch Food Scanner demo">
-                    <svg class="youtube-icon" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
-                        <path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/>
-                    </svg>
-                    Watch Demo
-                </a>
-            </div>
+        <div class="apps-grid" id="apps-container">
+            <!-- Apps will be dynamically generated here -->
         </div>
 
         <div class="about">
@@ -317,6 +289,48 @@
     </section>
 
     <script>
+        // ============================================
+        // EASY APP MANAGEMENT - Edit this array to add/remove apps
+        // ============================================
+        const apps = [
+            {
+                title: "GBV Safety App",
+                description: "Encrypted evidence vault, SOS alerts, secure reporting, and legal resources - all in one safe space. Designed to protect and empower survivors of gender-based violence.",
+                videoUrl: "https://www.youtube.com/shorts/obar6YU03Iw"
+            },
+            {
+                title: "Food Transparency Scanner",
+                description: "Scan barcodes for instant health recommendations. Breaks down complex ingredients into simple English, helping people make informed choices about what they eat.",
+                videoUrl: "https://www.youtube.com/shorts/S-kYKuDZ5Lk"
+            }
+            // Add more apps here by copying the format above
+        ];
+
+        // Generate app cards from the array
+        function generateAppCards() {
+            const container = document.getElementById('apps-container');
+            const youtubeIcon = `<svg class="youtube-icon" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                <path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/>
+            </svg>`;
+
+            apps.forEach(app => {
+                const card = document.createElement('div');
+                card.className = 'app-card';
+                card.innerHTML = `
+                    <h3>${app.title}</h3>
+                    <p>${app.description}</p>
+                    <a href="${app.videoUrl}" class="video-link" aria-label="Watch ${app.title} demo">
+                        ${youtubeIcon}
+                        Watch Demo
+                    </a>
+                `;
+                container.appendChild(card);
+            });
+        }
+
+        // Initialize app cards
+        generateAppCards();
+
         // Three.js Crystal Animation
         const canvas = document.getElementById('prism-canvas');
         const scene = new THREE.Scene();
@@ -327,10 +341,8 @@
         renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
         camera.position.z = 5;
 
-        // Create multi-faceted crystal geometry
         const crystalGroup = new THREE.Group();
         
-        // Main crystal (octahedron for gem-like appearance)
         const mainGeometry = new THREE.OctahedronGeometry(1.8, 0);
         const mainMaterial = new THREE.MeshPhongMaterial({
             color: 0x6366f1,
@@ -345,7 +357,6 @@
         const mainCrystal = new THREE.Mesh(mainGeometry, mainMaterial);
         crystalGroup.add(mainCrystal);
 
-        // Inner glowing core
         const coreGeometry = new THREE.SphereGeometry(0.5, 32, 32);
         const coreMaterial = new THREE.MeshBasicMaterial({
             color: 0xa855f7,
@@ -355,7 +366,6 @@
         const core = new THREE.Mesh(coreGeometry, coreMaterial);
         crystalGroup.add(core);
 
-        // Outer wireframe
         const edges = new THREE.EdgesGeometry(mainGeometry);
         const lineMaterial = new THREE.LineBasicMaterial({ 
             color: 0xffffff,
@@ -365,7 +375,6 @@
         const wireframe = new THREE.LineSegments(edges, lineMaterial);
         crystalGroup.add(wireframe);
 
-        // Orbiting crystals
         const smallCrystals = [];
         for (let i = 0; i < 3; i++) {
             const smallGeo = new THREE.TetrahedronGeometry(0.3, 0);
@@ -383,7 +392,6 @@
 
         scene.add(crystalGroup);
 
-        // Floating Geometric Shapes
         const floatingShapes = [];
         const shapeTypes = [
             { geo: new THREE.BoxGeometry(0.3, 0.3, 0.3), count: 4 },
@@ -402,7 +410,6 @@
                 });
                 const shape = new THREE.Mesh(shapeType.geo, shapeMaterial);
                 
-                // Random position in sphere around crystal
                 const theta = Math.random() * Math.PI * 2;
                 const phi = Math.random() * Math.PI;
                 const radius = 4 + Math.random() * 2;
@@ -425,7 +432,6 @@
             }
         });
 
-        // Crystal Shards (small debris field)
         const shards = [];
         for (let i = 0; i < 20; i++) {
             const shardGeometry = new THREE.TetrahedronGeometry(0.1, 0);
@@ -457,7 +463,6 @@
             scene.add(shard);
         }
 
-        // Particle system
         const particleCount = 100;
         const particlesGeometry = new THREE.BufferGeometry();
         const particlePositions = [];
@@ -489,10 +494,8 @@
         const particles = new THREE.Points(particlesGeometry, particleMaterial);
         scene.add(particles);
 
-        // Store reference to particle color for animation
         const particleColor = new THREE.Color();
 
-        // Dynamic lighting
         const light1 = new THREE.PointLight(0x6366f1, 3, 100);
         light1.position.set(5, 5, 5);
         scene.add(light1);
@@ -508,7 +511,6 @@
         const ambientLight = new THREE.AmbientLight(0x404040, 0.3);
         scene.add(ambientLight);
 
-        // Mouse interaction
         let mouseX = 0;
         let mouseY = 0;
         let targetX = 0;
@@ -519,7 +521,6 @@
             mouseY = -(e.clientY / window.innerHeight) * 2 + 1;
         });
 
-        // Animation loop
         let time = 0;
         
         function animate() {
@@ -527,15 +528,12 @@
             
             time += 0.01;
             
-            // Smooth mouse follow
             targetX += (mouseX - targetX) * 0.05;
             targetY += (mouseY - targetY) * 0.05;
             
-            // Main crystal rotation
             crystalGroup.rotation.x = time * 0.2 + targetY * 0.3;
             crystalGroup.rotation.y = time * 0.3 + targetX * 0.3;
             
-            // Rainbow color cycling
             const hue = (time * 0.08) % 1;
             const rainbowColor = new THREE.Color();
             rainbowColor.setHSL(hue, 1.0, 0.5);
@@ -546,15 +544,12 @@
             
             coreMaterial.color.copy(rainbowColor);
             
-            // Pulsating scale
             const scale = 1 + Math.sin(time * 1.5) * 0.15;
             mainCrystal.scale.set(scale, scale, scale);
             
-            // Core pulse
             const coreScale = 1 + Math.sin(time * 2) * 0.5;
             core.scale.set(coreScale, coreScale, coreScale);
             
-            // Orbit smaller crystals
             smallCrystals.forEach((crystal, i) => {
                 const angle = time + (i * Math.PI * 2 / 3);
                 const radius = 3;
@@ -571,7 +566,6 @@
                 crystal.material.emissive.copy(smallColor);
             });
             
-            // Animate floating shapes
             floatingShapes.forEach((shape, i) => {
                 const t = time * shape.userData.speed;
                 const radius = shape.userData.orbitRadius;
@@ -583,7 +577,6 @@
                 shape.rotation.x += shape.userData.rotationSpeed;
                 shape.rotation.y += shape.userData.rotationSpeed * 1.5;
                 
-                // Color shift
                 const shapeHue = (hue + i * 0.1) % 1;
                 const shapeColor = new THREE.Color();
                 shapeColor.setHSL(shapeHue, 1.0, 0.5);
@@ -591,7 +584,6 @@
                 shape.material.emissive.copy(shapeColor);
             });
             
-            // Animate crystal shards
             shards.forEach((shard, i) => {
                 shard.userData.angle += 0.005;
                 shard.position.x = Math.cos(shard.userData.angle) * shard.userData.radius;
@@ -607,10 +599,8 @@
                 shard.material.emissive.copy(shardColor);
             });
             
-            // Animate particles
             const positions = particles.geometry.attributes.position.array;
             
-            // Update particle color to match rainbow
             particleColor.setHSL(hue, 1.0, 0.7);
             particles.material.color.copy(particleColor);
             
@@ -627,7 +617,6 @@
             particles.geometry.attributes.position.needsUpdate = true;
             particles.rotation.y = time * 0.1;
             
-            // Animate lights
             light1.intensity = 3 + Math.sin(time * 2) * 1;
             light2.intensity = 3 + Math.sin(time * 2 + Math.PI) * 1;
             light3.intensity = 2 + Math.sin(time * 3) * 0.5;
@@ -636,7 +625,6 @@
         }
         animate();
 
-        // Responsive resize
         window.addEventListener('resize', () => {
             camera.aspect = window.innerWidth / window.innerHeight;
             camera.updateProjectionMatrix();
@@ -644,7 +632,6 @@
             renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
         });
 
-        // Scroll animations
         const observer = new IntersectionObserver((entries) => {
             entries.forEach(entry => {
                 if (entry.isIntersecting) {
@@ -657,7 +644,6 @@
             observer.observe(card);
         });
 
-        // Smooth scroll
         document.querySelectorAll('a[href^="#"]').forEach(anchor => {
             anchor.addEventListener('click', function (e) {
                 e.preventDefault();
