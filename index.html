@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -200,6 +201,7 @@
                 opacity: 0;
                 transform: translateY(30px);
             }
+
             to {
                 opacity: 1;
                 transform: translateY(0);
@@ -255,6 +257,7 @@
         }
     </style>
 </head>
+
 <body>
     <header>
         <div class="logo">LUMINA</div>
@@ -270,21 +273,33 @@
 
     <section id="apps">
         <h2>Our Solutions</h2>
-        <p class="section-description">Each application is built to solve real-world challenges faced by organisations working to make a difference.</p>
-        
+        <p class="section-description">Each application is built to solve real-world challenges faced by organisations
+            working to make a difference.</p>
+
         <div class="apps-grid" id="apps-container">
             <!-- Apps will be dynamically generated here -->
         </div>
 
         <div class="about">
             <h2>About Lumina</h2>
-            <p class="section-description">I build custom software for NGOs who need smart tools but can't afford traditional dev teams. Each solution is tailored to your organization's specific challenges.</p>
+            <p class="section-description">"I build custom software for NGOs – completely free. Your mission deserves
+                tools as powerful as your impact."
+
+                After 8 years of developing and shipping apps across iOS and Android, I wanted to use those skills for
+                something beyond commercial projects. This is my way of giving back: I build, deploy, and maintain
+                tailored software solutions for mission-driven organizations at no cost.
+
+                I don't do cookie-cutter tools. I build solutions for real problems – whistleblowing platforms with
+                encrypted evidence vaults, GBV reporting systems with SOS features, activist safety apps, and tools that
+                directly address the challenges your organization faces on the ground. If your work needs tools built
+                specifically for your mission and the challenges you face, let's talk.</p>
         </div>
     </section>
 
     <section id="contact" class="contact">
         <h2>Let's Work Together</h2>
-        <p class="section-description">If your organization needs a custom software solution, let's talk about how we can help.</p>
+        <p class="section-description">If your organization needs a custom software solution, let's talk about how we
+            can help.</p>
         <a href="mailto:wothando@luminaholdings.co.za" class="email-link">wothando@luminaholdings.co.za</a>
     </section>
 
@@ -336,13 +351,13 @@
         const scene = new THREE.Scene();
         const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
         const renderer = new THREE.WebGLRenderer({ canvas, alpha: true, antialias: true });
-        
+
         renderer.setSize(window.innerWidth, window.innerHeight);
         renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
         camera.position.z = 5;
 
         const crystalGroup = new THREE.Group();
-        
+
         const mainGeometry = new THREE.OctahedronGeometry(1.8, 0);
         const mainMaterial = new THREE.MeshPhongMaterial({
             color: 0x6366f1,
@@ -353,7 +368,7 @@
             shininess: 100,
             specular: 0xffffff
         });
-        
+
         const mainCrystal = new THREE.Mesh(mainGeometry, mainMaterial);
         crystalGroup.add(mainCrystal);
 
@@ -367,7 +382,7 @@
         crystalGroup.add(core);
 
         const edges = new THREE.EdgesGeometry(mainGeometry);
-        const lineMaterial = new THREE.LineBasicMaterial({ 
+        const lineMaterial = new THREE.LineBasicMaterial({
             color: 0xffffff,
             transparent: true,
             opacity: 0.6
@@ -409,15 +424,15 @@
                     opacity: 0.6
                 });
                 const shape = new THREE.Mesh(shapeType.geo, shapeMaterial);
-                
+
                 const theta = Math.random() * Math.PI * 2;
                 const phi = Math.random() * Math.PI;
                 const radius = 4 + Math.random() * 2;
-                
+
                 shape.position.x = radius * Math.sin(phi) * Math.cos(theta);
                 shape.position.y = radius * Math.sin(phi) * Math.sin(theta);
                 shape.position.z = radius * Math.cos(phi);
-                
+
                 shape.userData = {
                     offsetX: Math.random() * Math.PI * 2,
                     offsetY: Math.random() * Math.PI * 2,
@@ -426,7 +441,7 @@
                     orbitRadius: radius,
                     rotationSpeed: (Math.random() - 0.5) * 0.02
                 };
-                
+
                 floatingShapes.push(shape);
                 scene.add(shape);
             }
@@ -443,22 +458,22 @@
                 opacity: 0.7
             });
             const shard = new THREE.Mesh(shardGeometry, shardMaterial);
-            
+
             const angle = Math.random() * Math.PI * 2;
             const height = (Math.random() - 0.5) * 2;
             const radius = 2.5 + Math.random() * 0.5;
-            
+
             shard.position.x = Math.cos(angle) * radius;
             shard.position.y = height;
             shard.position.z = Math.sin(angle) * radius;
-            
+
             shard.userData = {
                 angle: angle,
                 radius: radius,
                 height: height,
                 rotationSpeed: (Math.random() - 0.5) * 0.03
             };
-            
+
             shards.push(shard);
             scene.add(shard);
         }
@@ -467,7 +482,7 @@
         const particlesGeometry = new THREE.BufferGeometry();
         const particlePositions = [];
         const particleVelocities = [];
-        
+
         for (let i = 0; i < particleCount; i++) {
             particlePositions.push(
                 (Math.random() - 0.5) * 10,
@@ -480,9 +495,9 @@
                 z: (Math.random() - 0.5) * 0.02
             });
         }
-        
+
         particlesGeometry.setAttribute('position', new THREE.Float32BufferAttribute(particlePositions, 3));
-        
+
         const particleMaterial = new THREE.PointsMaterial({
             color: 0xffffff,
             size: 0.05,
@@ -490,7 +505,7 @@
             opacity: 0.8,
             blending: THREE.AdditiveBlending
         });
-        
+
         const particles = new THREE.Points(particlesGeometry, particleMaterial);
         scene.add(particles);
 
@@ -522,34 +537,34 @@
         });
 
         let time = 0;
-        
+
         function animate() {
             requestAnimationFrame(animate);
-            
+
             time += 0.01;
-            
+
             targetX += (mouseX - targetX) * 0.05;
             targetY += (mouseY - targetY) * 0.05;
-            
+
             crystalGroup.rotation.x = time * 0.2 + targetY * 0.3;
             crystalGroup.rotation.y = time * 0.3 + targetX * 0.3;
-            
+
             const hue = (time * 0.08) % 1;
             const rainbowColor = new THREE.Color();
             rainbowColor.setHSL(hue, 1.0, 0.5);
-            
+
             mainMaterial.color.copy(rainbowColor);
             mainMaterial.emissive.copy(rainbowColor);
             mainMaterial.emissiveIntensity = 1.0 + Math.sin(time * 2) * 0.5;
-            
+
             coreMaterial.color.copy(rainbowColor);
-            
+
             const scale = 1 + Math.sin(time * 1.5) * 0.15;
             mainCrystal.scale.set(scale, scale, scale);
-            
+
             const coreScale = 1 + Math.sin(time * 2) * 0.5;
             core.scale.set(coreScale, coreScale, coreScale);
-            
+
             smallCrystals.forEach((crystal, i) => {
                 const angle = time + (i * Math.PI * 2 / 3);
                 const radius = 3;
@@ -558,69 +573,69 @@
                 crystal.position.z = Math.sin(angle) * radius;
                 crystal.rotation.x = time * 2;
                 crystal.rotation.y = time * 3;
-                
+
                 const smallHue = (hue + i * 0.33) % 1;
                 const smallColor = new THREE.Color();
                 smallColor.setHSL(smallHue, 1.0, 0.5);
                 crystal.material.color.copy(smallColor);
                 crystal.material.emissive.copy(smallColor);
             });
-            
+
             floatingShapes.forEach((shape, i) => {
                 const t = time * shape.userData.speed;
                 const radius = shape.userData.orbitRadius;
-                
+
                 shape.position.x = Math.sin(t + shape.userData.offsetX) * radius;
                 shape.position.y = Math.cos(t * 0.7 + shape.userData.offsetY) * radius * 0.6;
                 shape.position.z = Math.cos(t + shape.userData.offsetZ) * radius;
-                
+
                 shape.rotation.x += shape.userData.rotationSpeed;
                 shape.rotation.y += shape.userData.rotationSpeed * 1.5;
-                
+
                 const shapeHue = (hue + i * 0.1) % 1;
                 const shapeColor = new THREE.Color();
                 shapeColor.setHSL(shapeHue, 1.0, 0.5);
                 shape.material.color.copy(shapeColor);
                 shape.material.emissive.copy(shapeColor);
             });
-            
+
             shards.forEach((shard, i) => {
                 shard.userData.angle += 0.005;
                 shard.position.x = Math.cos(shard.userData.angle) * shard.userData.radius;
                 shard.position.z = Math.sin(shard.userData.angle) * shard.userData.radius;
-                
+
                 shard.rotation.x += shard.userData.rotationSpeed;
                 shard.rotation.y += shard.userData.rotationSpeed * 2;
-                
+
                 const shardHue = (hue + i * 0.05) % 1;
                 const shardColor = new THREE.Color();
                 shardColor.setHSL(shardHue, 1.0, 0.5);
                 shard.material.color.copy(shardColor);
                 shard.material.emissive.copy(shardColor);
             });
-            
+
             const positions = particles.geometry.attributes.position.array;
-            
+
             particleColor.setHSL(hue, 1.0, 0.7);
             particles.material.color.copy(particleColor);
-            
+
             for (let i = 0; i < particleCount; i++) {
                 const i3 = i * 3;
                 positions[i3] += particleVelocities[i].x;
                 positions[i3 + 1] += particleVelocities[i].y;
                 positions[i3 + 2] += particleVelocities[i].z;
-                
+
                 if (Math.abs(positions[i3]) > 5) particleVelocities[i].x *= -1;
                 if (Math.abs(positions[i3 + 1]) > 5) particleVelocities[i].y *= -1;
                 if (Math.abs(positions[i3 + 2]) > 5) particleVelocities[i].z *= -1;
             }
             particles.geometry.attributes.position.needsUpdate = true;
             particles.rotation.y = time * 0.1;
-            
+
             light1.intensity = 3 + Math.sin(time * 2) * 1;
             light2.intensity = 3 + Math.sin(time * 2 + Math.PI) * 1;
             light3.intensity = 2 + Math.sin(time * 3) * 0.5;
-            
+
             renderer.render(scene, camera);
         }
         animate();
@@ -655,4 +670,5 @@
         });
     </script>
 </body>
+
 </html>
