@@ -5,6 +5,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Lumina - Custom Software for NGOs</title>
+    <link rel="icon" type="image/png" href="lumina-logo.png">
+    <link rel="apple-touch-icon" href="lumina-logo.png">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
     <style>
         * {
@@ -24,14 +26,28 @@
             position: fixed;
             top: 0;
             width: 100%;
-            padding: 1.5rem 5%;
+            padding: 1rem 5%;
             background: rgba(10, 10, 10, 0.95);
             backdrop-filter: blur(10px);
             z-index: 100;
             border-bottom: 1px solid rgba(99, 102, 241, 0.1);
+            display: flex;
+            align-items: center;
         }
 
-        .logo {
+        .logo-container {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .logo-image {
+            height: 40px;
+            width: auto;
+            object-fit: contain;
+        }
+
+        .logo-text {
             font-size: 1.5rem;
             font-weight: 700;
             color: #6366f1;
@@ -236,6 +252,14 @@
             .email-link {
                 font-size: 1.2rem;
             }
+
+            .logo-image {
+                height: 32px;
+            }
+
+            .logo-text {
+                font-size: 1.2rem;
+            }
         }
 
         @media (max-width: 480px) {
@@ -251,8 +275,12 @@
                 padding: 1rem 5%;
             }
 
-            .logo {
-                font-size: 1.2rem;
+            .logo-image {
+                height: 28px;
+            }
+
+            .logo-text {
+                font-size: 1.1rem;
             }
         }
     </style>
@@ -260,7 +288,10 @@
 
 <body>
     <header>
-        <div class="logo">LUMINA</div>
+        <div class="logo-container">
+            <img src="lumina-logo.png" alt="Lumina Logo" class="logo-image">
+            <span class="logo-text">LUMINA</span>
+        </div>
     </header>
 
     <section class="hero">
@@ -299,8 +330,8 @@
                 where reliability is non-negotiable.
             </p>
             <p class="section-description">
-                If your organisation needs software built with precision and built around your mission, I’ll handle the
-                engineering end to end, free of charge. Let’s talk.
+                If your organisation needs software built with precision and built around your mission, I'll handle the
+                engineering end to end, free of charge. Let's talk.
             </p>
         </div>
 
@@ -327,10 +358,8 @@
                     description: "Scan barcodes for instant health recommendations. Breaks down complex ingredients into simple English, helping people make informed choices about what they eat.",
                     videoUrl: "https://www.youtube.com/shorts/S-kYKuDZ5Lk"
                 }
-                // Add more apps here by copying the format above
             ];
 
-            // Generate app cards from the array
             function generateAppCards() {
                 const container = document.getElementById('apps-container');
                 const youtubeIcon = `<svg class="youtube-icon" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
@@ -352,7 +381,6 @@
                 });
             }
 
-            // Initialize app cards
             generateAppCards();
 
             // Three.js Crystal Animation
