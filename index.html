@@ -391,7 +391,7 @@
             generateAppCards();
 
             // ============================================
-            // THREE.JS GEOMETRIC LIGHT BULB ANIMATION V3
+            // THREE.JS MECHANICAL LIGHT BULB ANIMATION
             // ============================================
             const canvas = document.getElementById('prism-canvas');
             const scene = new THREE.Scene();
@@ -404,217 +404,182 @@
 
             const bulbGroup = new THREE.Group();
 
-            // Minimalist glass bulb - icosphere for faceted look
-            const bulbGeometry = new THREE.IcosahedronGeometry(1.4, 1);
+            // Light bulb glass
+            const bulbGeometry = new THREE.SphereGeometry(1.2, 32, 32);
             const bulbMaterial = new THREE.MeshPhongMaterial({
                 color: 0xffffff,
-                emissive: 0x6366f1,
-                emissiveIntensity: 0.3,
+                emissive: 0xffaa00,
+                emissiveIntensity: 0.5,
                 transparent: true,
-                opacity: 0.15,
+                opacity: 0.3,
                 shininess: 100,
-                specular: 0xffffff,
-                flatShading: true
+                specular: 0xffffff
             });
             const bulb = new THREE.Mesh(bulbGeometry, bulbMaterial);
-            bulb.position.y = 0.2;
             bulbGroup.add(bulb);
 
-            // Wireframe overlay
-            const wireframeGeo = new THREE.EdgesGeometry(bulbGeometry);
-            const wireframeMat = new THREE.LineBasicMaterial({ 
-                color: 0x6366f1, 
-                transparent: true, 
-                opacity: 0.4 
-            });
-            const wireframe = new THREE.LineSegments(wireframeGeo, wireframeMat);
-            wireframe.position.y = 0.2;
-            bulbGroup.add(wireframe);
-
-            // Central glowing core - pulsing orb
-            const coreGeometry = new THREE.IcosahedronGeometry(0.5, 2);
-            const coreMaterial = new THREE.MeshBasicMaterial({
-                color: 0xffdd00,
+            // Filament glow (inner core)
+            const filamentGeometry = new THREE.SphereGeometry(0.3, 16, 16);
+            const filamentMaterial = new THREE.MeshBasicMaterial({
+                color: 0xffff00,
                 transparent: true,
-                opacity: 0.8,
-                wireframe: false
+                opacity: 0.9
             });
-            const core = new THREE.Mesh(coreGeometry, coreMaterial);
-            core.position.y = 0.2;
-            bulbGroup.add(core);
+            const filament = new THREE.Mesh(filamentGeometry, filamentMaterial);
+            bulbGroup.add(filament);
 
-            // Simple geometric base
-            const baseGeometry = new THREE.CylinderGeometry(0.6, 0.7, 1, 6);
+            // Bulb base (screw thread)
+            const baseGeometry = new THREE.CylinderGeometry(0.5, 0.6, 0.8, 16);
             const baseMaterial = new THREE.MeshPhongMaterial({
-                color: 0x4a4a4a,
-                metalness: 0.9,
-                shininess: 80,
-                flatShading: true
+                color: 0x888888,
+                metalness: 0.8,
+                shininess: 80
             });
             const base = new THREE.Mesh(baseGeometry, baseMaterial);
             base.position.y = -1.6;
             bulbGroup.add(base);
 
-            // Hexagonal rings on base
-            for (let i = 0; i < 3; i++) {
-                const ringGeo = new THREE.TorusGeometry(0.65, 0.06, 6, 6);
-                const ringMat = new THREE.MeshPhongMaterial({
-                    color: 0x333333,
-                    metalness: 0.8
-                });
-                const ring = new THREE.Mesh(ringGeo, ringMat);
-                ring.rotation.x = Math.PI / 2;
-                ring.position.y = -1.3 - (i * 0.2);
-                bulbGroup.add(ring);
-            }
-
-            // Floating geometric gears - simplified and stylized
-            function createMinimalGear(size, segments, color) {
+            // Create gears inside the bulb
+            function createGear(radius, teeth, thickness, color) {
                 const gearGroup = new THREE.Group();
-                
-                // Main ring
-                const ringGeo = new THREE.TorusGeometry(size, size * 0.15, 6, segments);
-                const gearMat = new THREE.MeshPhongMaterial({
+
+                // Main gear body
+                const gearGeometry = new THREE.CylinderGeometry(radius, radius, thickness, teeth * 2);
+                const gearMaterial = new THREE.MeshPhongMaterial({
                     color: color,
                     emissive: color,
-                    emissiveIntensity: 0.5,
-                    metalness: 0.8,
-                    flatShading: true
+                    emissiveIntensity: 0.3,
+                    metalness: 0.7,
+                    shininess: 60
                 });
-                const ring = new THREE.Mesh(ringGeo, gearMat);
-                gearGroup.add(ring);
+                const gearBody = new THREE.Mesh(gearGeometry, gearMaterial);
+                gearGroup.add(gearBody);
 
-                // Spokes as simple lines
-                for (let i = 0; i < segments; i++) {
-                    const angle = (i / segments) * Math.PI * 2;
-                    const spokeGeo = new THREE.BoxGeometry(size * 0.1, size * 0.1, size * 1.5);
-                    const spoke = new THREE.Mesh(spokeGeo, gearMat);
-                    spoke.position.x = Math.cos(angle) * size * 0.7;
-                    spoke.position.y = Math.sin(angle) * size * 0.7;
-                    spoke.rotation.z = angle;
-                    gearGroup.add(spoke);
+                // Add teeth
+                for (let i = 0; i < teeth; i++) {
+                    const angle = (i / teeth) * Math.PI * 2;
+                    const toothGeometry = new THREE.BoxGeometry(0.15, thickness * 1.2, radius * 0.3);
+                    const tooth = new THREE.Mesh(toothGeometry, gearMaterial);
+                    tooth.position.x = Math.cos(angle) * (radius + 0.1);
+                    tooth.position.z = Math.sin(angle) * (radius + 0.1);
+                    tooth.rotation.y = angle;
+                    gearGroup.add(tooth);
                 }
 
-                // Center node
-                const centerGeo = new THREE.IcosahedronGeometry(size * 0.3, 0);
-                const center = new THREE.Mesh(centerGeo, gearMat);
-                gearGroup.add(center);
+                // Center hub
+                const hubGeometry = new THREE.CylinderGeometry(radius * 0.3, radius * 0.3, thickness * 1.5, 16);
+                const hubMaterial = new THREE.MeshPhongMaterial({
+                    color: 0x444444,
+                    metalness: 0.9
+                });
+                const hub = new THREE.Mesh(hubGeometry, hubMaterial);
+                gearGroup.add(hub);
 
                 return gearGroup;
             }
 
+            // Create multiple gears with different sizes and positions
             const gears = [];
 
-            // Large central gear
-            const gear1 = createMinimalGear(0.8, 8, 0x6366f1);
-            gear1.position.set(0, 0.2, 0);
-            gears.push({ mesh: gear1, speed: 0.01, axis: 'z' });
+            const gear1 = createGear(0.6, 12, 0.15, 0x6366f1);
+            gear1.position.set(0, 0.3, 0);
+            gear1.rotation.x = Math.PI / 2;
+            gears.push({ mesh: gear1, speed: 0.02, axis: 'z' });
             bulbGroup.add(gear1);
 
-            // Orbiting smaller gears
-            const gear2 = createMinimalGear(0.4, 6, 0xa855f7);
-            gear2.position.set(1.2, 0.6, 0.3);
-            gears.push({ mesh: gear2, speed: -0.025, axis: 'z', orbit: true, orbitSpeed: 0.3, orbitRadius: 1.3 });
+            const gear2 = createGear(0.4, 8, 0.12, 0xa855f7);
+            gear2.position.set(0.7, -0.2, 0.3);
+            gear2.rotation.x = Math.PI / 2;
+            gear2.rotation.y = Math.PI / 6;
+            gears.push({ mesh: gear2, speed: -0.03, axis: 'z' });
             bulbGroup.add(gear2);
 
-            const gear3 = createMinimalGear(0.35, 5, 0x3b82f6);
-            gear3.position.set(-1.1, -0.3, 0.4);
-            gears.push({ mesh: gear3, speed: 0.03, axis: 'z', orbit: true, orbitSpeed: 0.25, orbitRadius: 1.2 });
+            const gear3 = createGear(0.35, 10, 0.1, 0x3b82f6);
+            gear3.position.set(-0.6, 0, 0.4);
+            gear3.rotation.x = Math.PI / 3;
+            gear3.rotation.z = Math.PI / 4;
+            gears.push({ mesh: gear3, speed: 0.025, axis: 'y' });
             bulbGroup.add(gear3);
 
-            const gear4 = createMinimalGear(0.3, 4, 0xfbbf24);
-            gear4.position.set(0.8, -0.8, -0.2);
-            gears.push({ mesh: gear4, speed: -0.035, axis: 'z', orbit: true, orbitSpeed: 0.35, orbitRadius: 1.1 });
+            const gear4 = createGear(0.3, 6, 0.1, 0xfbbf24);
+            gear4.position.set(0, -0.5, 0.2);
+            gear4.rotation.x = Math.PI / 2;
+            gears.push({ mesh: gear4, speed: -0.04, axis: 'z' });
             bulbGroup.add(gear4);
 
-            const gear5 = createMinimalGear(0.25, 6, 0xec4899);
-            gear5.position.set(-0.9, 0.9, -0.3);
-            gears.push({ mesh: gear5, speed: 0.028, axis: 'z', orbit: true, orbitSpeed: 0.28, orbitRadius: 1.15 });
+            const gear5 = createGear(0.25, 8, 0.08, 0xec4899);
+            gear5.position.set(-0.4, 0.4, -0.2);
+            gear5.rotation.y = Math.PI / 4;
+            gear5.rotation.z = Math.PI / 6;
+            gears.push({ mesh: gear5, speed: 0.035, axis: 'x' });
             bulbGroup.add(gear5);
 
             scene.add(bulbGroup);
 
-            // Orbiting light trails
-            const trailCount = 5;
-            const trails = [];
-
-            for (let i = 0; i < trailCount; i++) {
-                const curve = new THREE.EllipseCurve(
-                    0, 0,
-                    2 + i * 0.3, 2 + i * 0.3,
-                    0, 2 * Math.PI,
-                    false,
-                    0
-                );
-                
-                const points = curve.getPoints(50);
-                const geometry = new THREE.BufferGeometry().setFromPoints(points);
-                
-                const material = new THREE.LineBasicMaterial({
-                    color: 0x6366f1,
-                    transparent: true,
-                    opacity: 0.2
+            // Create connecting rods between gears
+            const rods = [];
+            for (let i = 0; i < gears.length - 1; i++) {
+                const rodGeometry = new THREE.CylinderGeometry(0.03, 0.03, 1, 8);
+                const rodMaterial = new THREE.MeshPhongMaterial({
+                    color: 0x666666,
+                    metalness: 0.8
                 });
-                
-                const trail = new THREE.Line(geometry, material);
-                trail.rotation.x = Math.PI / 2;
-                trail.rotation.z = (i / trailCount) * Math.PI * 0.5;
-                trails.push(trail);
-                scene.add(trail);
+                const rod = new THREE.Mesh(rodGeometry, rodMaterial);
+                rods.push({ mesh: rod, gear1: gears[i].mesh, gear2: gears[i + 1].mesh });
+                bulbGroup.add(rod);
             }
 
-            // Floating energy particles - minimal dots
-            const particleCount = 200;
-            const particlesGeo = new THREE.BufferGeometry();
+            // Energy particles flowing around the bulb
+            const particleCount = 80;
+            const particlesGeometry = new THREE.BufferGeometry();
             const particlePositions = [];
-            const particleData = [];
+            const particleVelocities = [];
 
             for (let i = 0; i < particleCount; i++) {
-                const theta = Math.random() * Math.PI * 2;
-                const phi = Math.random() * Math.PI;
-                const radius = 3 + Math.random() * 2;
-                
+                const angle = Math.random() * Math.PI * 2;
+                const radius = 2 + Math.random() * 1;
+                const height = (Math.random() - 0.5) * 3;
+
                 particlePositions.push(
-                    radius * Math.sin(phi) * Math.cos(theta),
-                    radius * Math.sin(phi) * Math.sin(theta),
-                    radius * Math.cos(phi)
+                    Math.cos(angle) * radius,
+                    height,
+                    Math.sin(angle) * radius
                 );
-                
-                particleData.push({
-                    theta: theta,
-                    phi: phi,
+                particleVelocities.push({
+                    angle: angle,
                     radius: radius,
-                    speed: 0.005 + Math.random() * 0.01
+                    height: height,
+                    speed: 0.01 + Math.random() * 0.02,
+                    verticalSpeed: (Math.random() - 0.5) * 0.01
                 });
             }
 
-            particlesGeo.setAttribute('position', new THREE.Float32BufferAttribute(particlePositions, 3));
+            particlesGeometry.setAttribute('position', new THREE.Float32BufferAttribute(particlePositions, 3));
 
-            const particlesMat = new THREE.PointsMaterial({
-                color: 0x6366f1,
-                size: 0.05,
+            const particleMaterial = new THREE.PointsMaterial({
+                color: 0xffaa00,
+                size: 0.08,
                 transparent: true,
-                opacity: 0.6,
+                opacity: 0.8,
                 blending: THREE.AdditiveBlending
             });
 
-            const particles = new THREE.Points(particlesGeo, particlesMat);
+            const particles = new THREE.Points(particlesGeometry, particleMaterial);
             scene.add(particles);
 
-            // Lighting - cleaner setup
-            const mainLight = new THREE.PointLight(0xffdd00, 6, 100);
-            mainLight.position.set(0, 0.2, 0);
-            bulbGroup.add(mainLight);
+            const light1 = new THREE.PointLight(0xffaa00, 4, 100);
+            light1.position.set(0, 0, 0);
+            bulbGroup.add(light1);
 
-            const accentLight1 = new THREE.PointLight(0x6366f1, 3, 100);
-            accentLight1.position.set(5, 5, 5);
-            scene.add(accentLight1);
+            const light2 = new THREE.PointLight(0x6366f1, 2, 100);
+            light2.position.set(5, 3, 5);
+            scene.add(light2);
 
-            const accentLight2 = new THREE.PointLight(0xa855f7, 3, 100);
-            accentLight2.position.set(-5, -3, 5);
-            scene.add(accentLight2);
+            const light3 = new THREE.PointLight(0xa855f7, 2, 100);
+            light3.position.set(-5, -3, 5);
+            scene.add(light3);
 
-            const ambientLight = new THREE.AmbientLight(0x202020, 0.8);
+            const ambientLight = new THREE.AmbientLight(0x404040, 0.5);
             scene.add(ambientLight);
 
             let mouseX = 0;
@@ -637,104 +602,70 @@
                 targetX += (mouseX - targetX) * 0.05;
                 targetY += (mouseY - targetY) * 0.05;
 
-                // Smooth bulb rotation
-                bulbGroup.rotation.y = time * 0.15 + targetX * 0.4;
-                bulbGroup.rotation.x = Math.sin(time * 0.5) * 0.1 + targetY * 0.25;
+                // Gentle rotation of the entire bulb group
+                bulbGroup.rotation.y = time * 0.2 + targetX * 0.5;
+                bulbGroup.rotation.x = targetY * 0.3;
 
-                // Dynamic bulb glow
-                const glowPulse = 0.4 + Math.sin(time * 2.5) * 0.3;
-                bulbMaterial.emissiveIntensity = glowPulse;
-                glowMaterial.opacity = 0.7 + Math.sin(time * 3) * 0.2;
+                // Pulsing light effect
+                const pulseIntensity = 0.5 + Math.sin(time * 2) * 0.3;
+                bulbMaterial.emissiveIntensity = pulseIntensity;
+                filamentMaterial.opacity = 0.7 + Math.sin(time * 3) * 0.2;
 
-                // Filament wires pulsing
-                wireMaterial.emissiveIntensity = 0.5 + Math.sin(time * 4) * 0.3;
-
-                // Rotate gears with varied speeds
-                gears.forEach((gearData, index) => {
-                    gearData.mesh.rotation.z += gearData.speed;
-                    
-                    // Subtle wobble effect
-                    const wobble = Math.sin(time * 2 + index) * 0.02;
-                    gearData.mesh.position.y += wobble * 0.1;
-                });
-
-                // Update connecting belts/chains
-                connections.forEach((conn) => {
-                    const pos1 = new THREE.Vector3();
-                    const pos2 = new THREE.Vector3();
-                    
-                    conn.gear1.mesh.getWorldPosition(pos1);
-                    conn.gear2.mesh.getWorldPosition(pos2);
-                    
-                    const direction = new THREE.Vector3().subVectors(pos2, pos1);
-                    const distance = direction.length();
-                    
-                    conn.mesh.position.copy(pos1);
-                    conn.mesh.lookAt(pos2);
-                    conn.mesh.scale.x = distance;
-                });
-
-                // Animate spark particles (gear friction effect)
-                const sparkPos = sparks.geometry.attributes.position.array;
-                
-                for (let i = 0; i < sparkCount; i++) {
-                    const i3 = i * 3;
-                    
-                    sparkLifetimes[i] -= 0.02;
-                    
-                    if (sparkLifetimes[i] <= 0) {
-                        // Respawn spark at a random gear
-                        const randomGear = gears[Math.floor(Math.random() * gears.length)];
-                        const gearPos = new THREE.Vector3();
-                        randomGear.mesh.getWorldPosition(gearPos);
-                        
-                        const angle = Math.random() * Math.PI * 2;
-                        sparkPos[i3] = gearPos.x + Math.cos(angle) * randomGear.radius;
-                        sparkPos[i3 + 1] = gearPos.y + (Math.random() - 0.5) * 0.2;
-                        sparkPos[i3 + 2] = gearPos.z + Math.sin(angle) * randomGear.radius;
-                        
-                        sparkLifetimes[i] = 1 + Math.random() * 0.5;
-                        
-                        sparkVelocities[i] = {
-                            x: (Math.random() - 0.5) * 0.06,
-                            y: 0.03 + Math.random() * 0.05,
-                            z: (Math.random() - 0.5) * 0.06
-                        };
-                    } else {
-                        sparkPos[i3] += sparkVelocities[i].x;
-                        sparkPos[i3 + 1] += sparkVelocities[i].y;
-                        sparkPos[i3 + 2] += sparkVelocities[i].z;
-                        
-                        sparkVelocities[i].y -= 0.002; // Gravity
+                // Animate gears
+                gears.forEach((gearData) => {
+                    if (gearData.axis === 'z') {
+                        gearData.mesh.rotation.z += gearData.speed;
+                    } else if (gearData.axis === 'y') {
+                        gearData.mesh.rotation.y += gearData.speed;
+                    } else if (gearData.axis === 'x') {
+                        gearData.mesh.rotation.x += gearData.speed;
                     }
-                }
-                sparks.geometry.attributes.position.needsUpdate = true;
-                sparksMaterial.opacity = 0.9 * (Math.sin(time * 5) * 0.3 + 0.7);
+                });
 
-                // Animate energy field
-                const fieldPos = field.geometry.attributes.position.array;
+                // Update connecting rods
+                rods.forEach((rodData) => {
+                    const start = new THREE.Vector3();
+                    const end = new THREE.Vector3();
+                    rodData.gear1.getWorldPosition(start);
+                    rodData.gear2.getWorldPosition(end);
 
-                for (let i = 0; i < fieldCount; i++) {
+                    const midpoint = new THREE.Vector3().addVectors(start, end).multiplyScalar(0.5);
+                    rodData.mesh.position.copy(midpoint);
+
+                    const direction = new THREE.Vector3().subVectors(end, start);
+                    const distance = direction.length();
+                    rodData.mesh.scale.y = distance;
+
+                    rodData.mesh.quaternion.setFromUnitVectors(
+                        new THREE.Vector3(0, 1, 0),
+                        direction.normalize()
+                    );
+                });
+
+                // Animate particles in orbital pattern
+                const positions = particles.geometry.attributes.position.array;
+
+                for (let i = 0; i < particleCount; i++) {
                     const i3 = i * 3;
-                    const data = fieldData[i];
-                    
-                    data.angle += data.speed;
-                    data.height += data.verticalSpeed;
-                    
-                    if (data.height > 2.5) data.verticalSpeed = -Math.abs(data.verticalSpeed);
-                    if (data.height < -2.5) data.verticalSpeed = Math.abs(data.verticalSpeed);
-                    
-                    fieldPos[i3] = Math.cos(data.angle) * data.radius;
-                    fieldPos[i3 + 1] = data.height;
-                    fieldPos[i3 + 2] = Math.sin(data.angle) * data.radius;
-                }
-                field.geometry.attributes.position.needsUpdate = true;
+                    const vel = particleVelocities[i];
 
-                // Dynamic lighting
-                mainLight.intensity = 5 + Math.sin(time * 3) * 2;
-                accentLight1.intensity = 3 + Math.sin(time * 2) * 1;
-                accentLight2.intensity = 3 + Math.sin(time * 2.5 + Math.PI) * 1;
-                accentLight3.intensity = 2 + Math.sin(time * 1.8) * 0.8;
+                    vel.angle += vel.speed;
+                    vel.height += vel.verticalSpeed;
+
+                    // Keep particles within bounds
+                    if (vel.height > 2) vel.verticalSpeed = -Math.abs(vel.verticalSpeed);
+                    if (vel.height < -2) vel.verticalSpeed = Math.abs(vel.verticalSpeed);
+
+                    positions[i3] = Math.cos(vel.angle) * vel.radius;
+                    positions[i3 + 1] = vel.height;
+                    positions[i3 + 2] = Math.sin(vel.angle) * vel.radius;
+                }
+                particles.geometry.attributes.position.needsUpdate = true;
+
+                // Pulsing lights
+                light1.intensity = 4 + Math.sin(time * 2) * 1.5;
+                light2.intensity = 2 + Math.sin(time * 2 + Math.PI / 2) * 0.5;
+                light3.intensity = 2 + Math.sin(time * 2 + Math.PI) * 0.5;
 
                 renderer.render(scene, camera);
             }
@@ -786,31 +717,37 @@
 
             window.addEventListener('scroll', () => {
                 const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
-                
+
+                // Clear the timeout throughout the scroll
                 clearTimeout(scrollTimeout);
-                
+
+                // Detect scroll direction with more tolerance
                 const scrollDelta = scrollTop - lastScrollTop;
-                
+
                 if (scrollTop > scrollThreshold) {
                     if (scrollDelta > 10 && !isScrolling) {
+                        // Scrolling down with momentum
                         isScrolling = true;
                         header.classList.add('header-hidden');
                     } else if (scrollDelta < -10 && isScrolling) {
+                        // Scrolling up with momentum
                         isScrolling = false;
                         header.classList.remove('header-hidden');
                     }
                 } else {
+                    // Near the top of the page
                     isScrolling = false;
                     header.classList.remove('header-hidden');
                 }
-                
+
+                // Set a timeout to show header if user stops scrolling
                 scrollTimeout = setTimeout(() => {
                     if (scrollTop > scrollThreshold && isScrolling) {
                         header.classList.remove('header-hidden');
                         isScrolling = false;
                     }
                 }, 1500);
-                
+
                 lastScrollTop = scrollTop <= 0 ? 0 : scrollTop;
             });
         </script>
