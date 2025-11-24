@@ -33,6 +33,12 @@
             border-bottom: 1px solid rgba(99, 102, 241, 0.1);
             display: flex;
             align-items: center;
+            transition: transform 0.3s ease, opacity 0.3s ease;
+        }
+
+        header.header-hidden {
+            transform: translateY(-100%);
+            opacity: 0;
         }
 
         .logo-container {
@@ -383,7 +389,9 @@
 
             generateAppCards();
 
-            // Three.js Crystal Animation
+            // ============================================
+            // THREE.JS CRYSTAL ANIMATION
+            // ============================================
             const canvas = document.getElementById('prism-canvas');
             const scene = new THREE.Scene();
             const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
@@ -684,6 +692,9 @@
                 renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
             });
 
+            // ============================================
+            // INTERSECTION OBSERVER FOR APP CARDS
+            // ============================================
             const observer = new IntersectionObserver((entries) => {
                 entries.forEach(entry => {
                     if (entry.isIntersecting) {
@@ -696,6 +707,9 @@
                 observer.observe(card);
             });
 
+            // ============================================
+            // SMOOTH SCROLL FOR ANCHOR LINKS
+            // ============================================
             document.querySelectorAll('a[href^="#"]').forEach(anchor => {
                 anchor.addEventListener('click', function (e) {
                     e.preventDefault();
@@ -704,6 +718,39 @@
                         target.scrollIntoView({ behavior: 'smooth' });
                     }
                 });
+            });
+
+            // ============================================
+            // HEADER HIDE/SHOW ON SCROLL
+            // ============================================
+            let lastScrollTop = 0;
+            const header = document.querySelector('header');
+            const scrollThreshold = 50;
+            let ticking = false;
+
+            window.addEventListener('scroll', () => {
+                if (!ticking) {
+                    window.requestAnimationFrame(() => {
+                        const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+                        
+                        if (scrollTop > scrollThreshold) {
+                            if (scrollTop > lastScrollTop && scrollTop - lastScrollTop > 5) {
+                                // Scrolling down
+                                header.classList.add('header-hidden');
+                            } else if (lastScrollTop - scrollTop > 5) {
+                                // Scrolling up
+                                header.classList.remove('header-hidden');
+                            }
+                        } else {
+                            // At the top of the page
+                            header.classList.remove('header-hidden');
+                        }
+                        
+                        lastScrollTop = scrollTop <= 0 ? 0 : scrollTop;
+                        ticking = false;
+                    });
+                    ticking = true;
+                }
             });
         </script>
 </body>
