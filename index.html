@@ -391,7 +391,7 @@
             generateAppCards();
 
             // ============================================
-            // THREE.JS MECHANICAL LIGHT BULB ANIMATION
+            // THREE.JS MECHANICAL LIGHT BULB ANIMATION V2
             // ============================================
             const canvas = document.getElementById('prism-canvas');
             const scene = new THREE.Scene();
@@ -400,187 +400,337 @@
 
             renderer.setSize(window.innerWidth, window.innerHeight);
             renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-            camera.position.z = 6;
+            camera.position.z = 7;
 
             const bulbGroup = new THREE.Group();
 
-            // Light bulb glass
-            const bulbGeometry = new THREE.SphereGeometry(1.2, 32, 32);
+            // Light bulb glass - more elongated traditional shape
+            const bulbShape = new THREE.Shape();
+            bulbShape.absellipse(0, -0.5, 1, 1.4, 0, Math.PI, false, 0);
+            const extrudeSettings = { depth: 0.01, bevelEnabled: false };
+            
+            const bulbGeometry = new THREE.SphereGeometry(1.3, 32, 32, 0, Math.PI * 2, 0, Math.PI * 0.75);
             const bulbMaterial = new THREE.MeshPhongMaterial({
                 color: 0xffffff,
-                emissive: 0xffaa00,
-                emissiveIntensity: 0.5,
+                emissive: 0x6366f1,
+                emissiveIntensity: 0.4,
                 transparent: true,
-                opacity: 0.3,
+                opacity: 0.25,
                 shininess: 100,
                 specular: 0xffffff
             });
             const bulb = new THREE.Mesh(bulbGeometry, bulbMaterial);
+            bulb.position.y = 0.3;
             bulbGroup.add(bulb);
 
-            // Filament glow (inner core)
-            const filamentGeometry = new THREE.SphereGeometry(0.3, 16, 16);
-            const filamentMaterial = new THREE.MeshBasicMaterial({
-                color: 0xffff00,
+            // Glass rim
+            const rimGeometry = new THREE.TorusGeometry(1.3, 0.08, 16, 32);
+            const rimMaterial = new THREE.MeshPhongMaterial({
+                color: 0xcccccc,
+                metalness: 0.9,
+                shininess: 100
+            });
+            const rim = new THREE.Mesh(rimGeometry, rimMaterial);
+            rim.rotation.x = Math.PI / 2;
+            rim.position.y = -0.7;
+            bulbGroup.add(rim);
+
+            // Vertical filament wires
+            const wireGeometry = new THREE.CylinderGeometry(0.02, 0.02, 2, 8);
+            const wireMaterial = new THREE.MeshPhongMaterial({
+                color: 0xffaa00,
+                emissive: 0xffaa00,
+                emissiveIntensity: 0.7
+            });
+            
+            const wire1 = new THREE.Mesh(wireGeometry, wireMaterial);
+            wire1.position.set(-0.2, 0, 0);
+            bulbGroup.add(wire1);
+            
+            const wire2 = new THREE.Mesh(wireGeometry, wireMaterial);
+            wire2.position.set(0.2, 0, 0);
+            bulbGroup.add(wire2);
+
+            // Central glow orb
+            const glowGeometry = new THREE.SphereGeometry(0.4, 32, 32);
+            const glowMaterial = new THREE.MeshBasicMaterial({
+                color: 0xffdd00,
                 transparent: true,
                 opacity: 0.9
             });
-            const filament = new THREE.Mesh(filamentGeometry, filamentMaterial);
-            bulbGroup.add(filament);
+            const glowOrb = new THREE.Mesh(glowGeometry, glowMaterial);
+            glowOrb.position.y = 0.2;
+            bulbGroup.add(glowOrb);
 
-            // Bulb base (screw thread)
-            const baseGeometry = new THREE.CylinderGeometry(0.5, 0.6, 0.8, 16);
+            // Bulb base (wider, more detailed)
+            const baseGeometry = new THREE.CylinderGeometry(0.6, 0.7, 1, 16);
             const baseMaterial = new THREE.MeshPhongMaterial({
-                color: 0x888888,
-                metalness: 0.8,
-                shininess: 80
+                color: 0x999999,
+                metalness: 0.9,
+                shininess: 90
             });
             const base = new THREE.Mesh(baseGeometry, baseMaterial);
-            base.position.y = -1.6;
+            base.position.y = -1.7;
             bulbGroup.add(base);
 
-            // Create gears inside the bulb
-            function createGear(radius, teeth, thickness, color) {
-                const gearGroup = new THREE.Group();
+            // Screw threads
+            for (let i = 0; i < 5; i++) {
+                const threadGeometry = new THREE.TorusGeometry(0.65, 0.05, 8, 16);
+                const threadMaterial = new THREE.MeshPhongMaterial({
+                    color: 0x777777,
+                    metalness: 0.8
+                });
+                const thread = new THREE.Mesh(threadGeometry, threadMaterial);
+                thread.rotation.x = Math.PI / 2;
+                thread.position.y = -1.3 - (i * 0.15);
+                bulbGroup.add(thread);
+            }
 
-                // Main gear body
-                const gearGeometry = new THREE.CylinderGeometry(radius, radius, thickness, teeth * 2);
+            // Bottom contact
+            const contactGeometry = new THREE.CylinderGeometry(0.3, 0.3, 0.1, 16);
+            const contactMaterial = new THREE.MeshPhongMaterial({
+                color: 0x555555,
+                metalness: 0.95
+            });
+            const contact = new THREE.Mesh(contactGeometry, contactMaterial);
+            contact.position.y = -2.25;
+            bulbGroup.add(contact);
+
+            // Create more intricate gear system
+            function createDetailedGear(radius, teeth, thickness, color, hasSpokes) {
+                const gearGroup = new THREE.Group();
+                
+                // Main gear body (torus-like)
+                const outerRing = new THREE.TorusGeometry(radius, thickness, 8, teeth);
                 const gearMaterial = new THREE.MeshPhongMaterial({
                     color: color,
                     emissive: color,
-                    emissiveIntensity: 0.3,
-                    metalness: 0.7,
-                    shininess: 60
+                    emissiveIntensity: 0.4,
+                    metalness: 0.8,
+                    shininess: 80
                 });
-                const gearBody = new THREE.Mesh(gearGeometry, gearMaterial);
-                gearGroup.add(gearBody);
+                const ring = new THREE.Mesh(outerRing, gearMaterial);
+                ring.rotation.x = Math.PI / 2;
+                gearGroup.add(ring);
 
-                // Add teeth
+                // Gear teeth (more prominent)
                 for (let i = 0; i < teeth; i++) {
                     const angle = (i / teeth) * Math.PI * 2;
-                    const toothGeometry = new THREE.BoxGeometry(0.15, thickness * 1.2, radius * 0.3);
+                    const toothGeometry = new THREE.BoxGeometry(0.12, thickness * 3, radius * 0.4);
                     const tooth = new THREE.Mesh(toothGeometry, gearMaterial);
-                    tooth.position.x = Math.cos(angle) * (radius + 0.1);
-                    tooth.position.z = Math.sin(angle) * (radius + 0.1);
+                    tooth.position.x = Math.cos(angle) * (radius + thickness);
+                    tooth.position.z = Math.sin(angle) * (radius + thickness);
                     tooth.rotation.y = angle;
                     gearGroup.add(tooth);
                 }
 
-                // Center hub
-                const hubGeometry = new THREE.CylinderGeometry(radius * 0.3, radius * 0.3, thickness * 1.5, 16);
+                // Center hub with spokes
+                const hubGeometry = new THREE.CylinderGeometry(radius * 0.25, radius * 0.25, thickness * 2, 16);
                 const hubMaterial = new THREE.MeshPhongMaterial({
-                    color: 0x444444,
-                    metalness: 0.9
+                    color: 0x333333,
+                    metalness: 0.95,
+                    emissive: color,
+                    emissiveIntensity: 0.2
                 });
                 const hub = new THREE.Mesh(hubGeometry, hubMaterial);
                 gearGroup.add(hub);
 
+                // Spokes
+                if (hasSpokes) {
+                    const spokeCount = 6;
+                    for (let i = 0; i < spokeCount; i++) {
+                        const angle = (i / spokeCount) * Math.PI * 2;
+                        const spokeGeometry = new THREE.BoxGeometry(0.06, thickness * 2, radius * 0.6);
+                        const spoke = new THREE.Mesh(spokeGeometry, hubMaterial);
+                        spoke.position.x = Math.cos(angle) * (radius * 0.4);
+                        spoke.position.z = Math.sin(angle) * (radius * 0.4);
+                        spoke.rotation.y = angle;
+                        gearGroup.add(spoke);
+                    }
+                }
+
                 return gearGroup;
             }
 
-            // Create multiple gears with different sizes and positions
+            // Create an intricate vertical gear system
             const gears = [];
-
-            const gear1 = createGear(0.6, 12, 0.15, 0x6366f1);
-            gear1.position.set(0, 0.3, 0);
+            
+            // Large central gear
+            const gear1 = createDetailedGear(0.7, 16, 0.12, 0x6366f1, true);
+            gear1.position.set(0, 0.2, 0);
             gear1.rotation.x = Math.PI / 2;
-            gears.push({ mesh: gear1, speed: 0.02, axis: 'z' });
+            gears.push({ mesh: gear1, speed: 0.015, axis: 'z', radius: 0.7 });
             bulbGroup.add(gear1);
 
-            const gear2 = createGear(0.4, 8, 0.12, 0xa855f7);
-            gear2.position.set(0.7, -0.2, 0.3);
-            gear2.rotation.x = Math.PI / 2;
-            gear2.rotation.y = Math.PI / 6;
-            gears.push({ mesh: gear2, speed: -0.03, axis: 'z' });
+            // Upper-left gear
+            const gear2 = createDetailedGear(0.45, 12, 0.1, 0xa855f7, true);
+            gear2.position.set(-0.9, 0.7, 0.2);
+            gear2.rotation.x = Math.PI / 2.2;
+            gears.push({ mesh: gear2, speed: -0.024, axis: 'z', radius: 0.45 });
             bulbGroup.add(gear2);
 
-            const gear3 = createGear(0.35, 10, 0.1, 0x3b82f6);
-            gear3.position.set(-0.6, 0, 0.4);
-            gear3.rotation.x = Math.PI / 3;
-            gear3.rotation.z = Math.PI / 4;
-            gears.push({ mesh: gear3, speed: 0.025, axis: 'y' });
+            // Upper-right gear
+            const gear3 = createDetailedGear(0.35, 10, 0.08, 0x3b82f6, false);
+            gear3.position.set(0.85, 0.8, -0.1);
+            gear3.rotation.x = Math.PI / 1.8;
+            gear3.rotation.y = Math.PI / 8;
+            gears.push({ mesh: gear3, speed: 0.028, axis: 'z', radius: 0.35 });
             bulbGroup.add(gear3);
 
-            const gear4 = createGear(0.3, 6, 0.1, 0xfbbf24);
-            gear4.position.set(0, -0.5, 0.2);
+            // Lower-left small gear
+            const gear4 = createDetailedGear(0.3, 8, 0.08, 0xfbbf24, false);
+            gear4.position.set(-0.7, -0.3, 0.3);
             gear4.rotation.x = Math.PI / 2;
-            gears.push({ mesh: gear4, speed: -0.04, axis: 'z' });
+            gears.push({ mesh: gear4, speed: -0.035, axis: 'z', radius: 0.3 });
             bulbGroup.add(gear4);
 
-            const gear5 = createGear(0.25, 8, 0.08, 0xec4899);
-            gear5.position.set(-0.4, 0.4, -0.2);
-            gear5.rotation.y = Math.PI / 4;
-            gear5.rotation.z = Math.PI / 6;
-            gears.push({ mesh: gear5, speed: 0.035, axis: 'x' });
+            // Lower-right gear
+            const gear5 = createDetailedGear(0.38, 11, 0.09, 0xec4899, true);
+            gear5.position.set(0.75, -0.2, 0.15);
+            gear5.rotation.x = Math.PI / 2.3;
+            gears.push({ mesh: gear5, speed: 0.022, axis: 'z', radius: 0.38 });
             bulbGroup.add(gear5);
+
+            // Tiny accent gears
+            const gear6 = createDetailedGear(0.2, 6, 0.06, 0x10b981, false);
+            gear6.position.set(0, -0.6, 0.25);
+            gear6.rotation.x = Math.PI / 2;
+            gears.push({ mesh: gear6, speed: -0.045, axis: 'z', radius: 0.2 });
+            bulbGroup.add(gear6);
+
+            const gear7 = createDetailedGear(0.25, 7, 0.07, 0xf59e0b, false);
+            gear7.position.set(-0.3, 0.9, -0.1);
+            gear7.rotation.x = Math.PI / 2.5;
+            gears.push({ mesh: gear7, speed: 0.032, axis: 'z', radius: 0.25 });
+            bulbGroup.add(gear7);
 
             scene.add(bulbGroup);
 
-            // Create connecting rods between gears
-            const rods = [];
-            for (let i = 0; i < gears.length - 1; i++) {
-                const rodGeometry = new THREE.CylinderGeometry(0.03, 0.03, 1, 8);
-                const rodMaterial = new THREE.MeshPhongMaterial({
-                    color: 0x666666,
-                    metalness: 0.8
+            // Connecting belts/chains between gears
+            const connections = [];
+            const connectionPairs = [
+                [0, 1], [0, 2], [0, 3], [0, 4], [1, 6], [2, 4]
+            ];
+
+            connectionPairs.forEach(pair => {
+                const points = [];
+                const segments = 32;
+                for (let i = 0; i <= segments; i++) {
+                    const t = i / segments;
+                    points.push(new THREE.Vector3(t, 0, 0));
+                }
+                
+                const curve = new THREE.CatmullRomCurve3(points);
+                const tubeGeometry = new THREE.TubeGeometry(curve, 32, 0.02, 8, false);
+                const tubeMaterial = new THREE.MeshPhongMaterial({
+                    color: 0x444444,
+                    metalness: 0.7,
+                    emissive: 0x222222,
+                    emissiveIntensity: 0.3
                 });
-                const rod = new THREE.Mesh(rodGeometry, rodMaterial);
-                rods.push({ mesh: rod, gear1: gears[i].mesh, gear2: gears[i + 1].mesh });
-                bulbGroup.add(rod);
+                const tube = new THREE.Mesh(tubeGeometry, tubeMaterial);
+                
+                connections.push({
+                    mesh: tube,
+                    gear1: gears[pair[0]],
+                    gear2: gears[pair[1]]
+                });
+                
+                bulbGroup.add(tube);
+            });
+
+            // Spark particles from gear interactions
+            const sparkCount = 150;
+            const sparksGeometry = new THREE.BufferGeometry();
+            const sparkPositions = [];
+            const sparkVelocities = [];
+            const sparkLifetimes = [];
+
+            for (let i = 0; i < sparkCount; i++) {
+                sparkPositions.push(0, 0, 0);
+                sparkVelocities.push({
+                    x: (Math.random() - 0.5) * 0.05,
+                    y: Math.random() * 0.08,
+                    z: (Math.random() - 0.5) * 0.05
+                });
+                sparkLifetimes.push(Math.random());
             }
 
-            // Energy particles flowing around the bulb
-            const particleCount = 80;
-            const particlesGeometry = new THREE.BufferGeometry();
-            const particlePositions = [];
-            const particleVelocities = [];
+            sparksGeometry.setAttribute('position', new THREE.Float32BufferAttribute(sparkPositions, 3));
 
-            for (let i = 0; i < particleCount; i++) {
+            const sparksMaterial = new THREE.PointsMaterial({
+                color: 0xffaa00,
+                size: 0.12,
+                transparent: true,
+                opacity: 0.9,
+                blending: THREE.AdditiveBlending
+            });
+
+            const sparks = new THREE.Points(sparksGeometry, sparksMaterial);
+            scene.add(sparks);
+
+            // Energy field particles
+            const fieldCount = 100;
+            const fieldGeometry = new THREE.BufferGeometry();
+            const fieldPositions = [];
+            const fieldData = [];
+
+            for (let i = 0; i < fieldCount; i++) {
                 const angle = Math.random() * Math.PI * 2;
-                const radius = 2 + Math.random() * 1;
-                const height = (Math.random() - 0.5) * 3;
-
-                particlePositions.push(
+                const radius = 2.5 + Math.random() * 1.5;
+                const height = (Math.random() - 0.5) * 4;
+                
+                fieldPositions.push(
                     Math.cos(angle) * radius,
                     height,
                     Math.sin(angle) * radius
                 );
-                particleVelocities.push({
+                fieldData.push({
                     angle: angle,
                     radius: radius,
                     height: height,
-                    speed: 0.01 + Math.random() * 0.02,
-                    verticalSpeed: (Math.random() - 0.5) * 0.01
+                    speed: 0.008 + Math.random() * 0.015,
+                    verticalSpeed: (Math.random() - 0.5) * 0.008
                 });
             }
 
-            particlesGeometry.setAttribute('position', new THREE.Float32BufferAttribute(particlePositions, 3));
+            fieldGeometry.setAttribute('position', new THREE.Float32BufferAttribute(fieldPositions, 3));
 
-            const particleMaterial = new THREE.PointsMaterial({
-                color: 0xffaa00,
-                size: 0.08,
+            const fieldMaterial = new THREE.PointsMaterial({
+                color: 0x6366f1,
+                size: 0.06,
                 transparent: true,
-                opacity: 0.8,
+                opacity: 0.7,
                 blending: THREE.AdditiveBlending
             });
 
-            const particles = new THREE.Points(particlesGeometry, particleMaterial);
-            scene.add(particles);
+            const field = new THREE.Points(fieldGeometry, fieldMaterial);
+            scene.add(field);
 
-            const light1 = new THREE.PointLight(0xffaa00, 4, 100);
-            light1.position.set(0, 0, 0);
-            bulbGroup.add(light1);
+            // Enhanced lighting
+            const mainLight = new THREE.PointLight(0xffdd00, 5, 100);
+            mainLight.position.set(0, 0.2, 0);
+            bulbGroup.add(mainLight);
 
-            const light2 = new THREE.PointLight(0x6366f1, 2, 100);
-            light2.position.set(5, 3, 5);
-            scene.add(light2);
+            const accentLight1 = new THREE.PointLight(0x6366f1, 3, 100);
+            accentLight1.position.set(4, 4, 4);
+            scene.add(accentLight1);
 
-            const light3 = new THREE.PointLight(0xa855f7, 2, 100);
-            light3.position.set(-5, -3, 5);
-            scene.add(light3);
+            const accentLight2 = new THREE.PointLight(0xa855f7, 3, 100);
+            accentLight2.position.set(-4, -2, 4);
+            scene.add(accentLight2);
 
-            const ambientLight = new THREE.AmbientLight(0x404040, 0.5);
+            const accentLight3 = new THREE.PointLight(0x3b82f6, 2, 100);
+            accentLight3.position.set(0, 6, -4);
+            scene.add(accentLight3);
+
+            const ambientLight = new THREE.AmbientLight(0x404040, 0.6);
             scene.add(ambientLight);
+
+            // Rim light for depth
+            const rimLight = new THREE.DirectionalLight(0x6366f1, 1.5);
+            rimLight.position.set(-5, 3, -5);
+            scene.add(rimLight);
 
             let mouseX = 0;
             let mouseY = 0;
@@ -602,70 +752,104 @@
                 targetX += (mouseX - targetX) * 0.05;
                 targetY += (mouseY - targetY) * 0.05;
 
-                // Gentle rotation of the entire bulb group
-                bulbGroup.rotation.y = time * 0.2 + targetX * 0.5;
-                bulbGroup.rotation.x = targetY * 0.3;
+                // Smooth bulb rotation
+                bulbGroup.rotation.y = time * 0.15 + targetX * 0.4;
+                bulbGroup.rotation.x = Math.sin(time * 0.5) * 0.1 + targetY * 0.25;
 
-                // Pulsing light effect
-                const pulseIntensity = 0.5 + Math.sin(time * 2) * 0.3;
-                bulbMaterial.emissiveIntensity = pulseIntensity;
-                filamentMaterial.opacity = 0.7 + Math.sin(time * 3) * 0.2;
+                // Dynamic bulb glow
+                const glowPulse = 0.4 + Math.sin(time * 2.5) * 0.3;
+                bulbMaterial.emissiveIntensity = glowPulse;
+                glowMaterial.opacity = 0.7 + Math.sin(time * 3) * 0.2;
 
-                // Animate gears
-                gears.forEach((gearData) => {
-                    if (gearData.axis === 'z') {
-                        gearData.mesh.rotation.z += gearData.speed;
-                    } else if (gearData.axis === 'y') {
-                        gearData.mesh.rotation.y += gearData.speed;
-                    } else if (gearData.axis === 'x') {
-                        gearData.mesh.rotation.x += gearData.speed;
-                    }
+                // Filament wires pulsing
+                wireMaterial.emissiveIntensity = 0.5 + Math.sin(time * 4) * 0.3;
+
+                // Rotate gears with varied speeds
+                gears.forEach((gearData, index) => {
+                    gearData.mesh.rotation.z += gearData.speed;
+                    
+                    // Subtle wobble effect
+                    const wobble = Math.sin(time * 2 + index) * 0.02;
+                    gearData.mesh.position.y += wobble * 0.1;
                 });
 
-                // Update connecting rods
-                rods.forEach((rodData) => {
-                    const start = new THREE.Vector3();
-                    const end = new THREE.Vector3();
-                    rodData.gear1.getWorldPosition(start);
-                    rodData.gear2.getWorldPosition(end);
-
-                    const midpoint = new THREE.Vector3().addVectors(start, end).multiplyScalar(0.5);
-                    rodData.mesh.position.copy(midpoint);
-
-                    const direction = new THREE.Vector3().subVectors(end, start);
+                // Update connecting belts/chains
+                connections.forEach((conn) => {
+                    const pos1 = new THREE.Vector3();
+                    const pos2 = new THREE.Vector3();
+                    
+                    conn.gear1.mesh.getWorldPosition(pos1);
+                    conn.gear2.mesh.getWorldPosition(pos2);
+                    
+                    const direction = new THREE.Vector3().subVectors(pos2, pos1);
                     const distance = direction.length();
-                    rodData.mesh.scale.y = distance;
-
-                    rodData.mesh.quaternion.setFromUnitVectors(
-                        new THREE.Vector3(0, 1, 0),
-                        direction.normalize()
-                    );
+                    
+                    conn.mesh.position.copy(pos1);
+                    conn.mesh.lookAt(pos2);
+                    conn.mesh.scale.x = distance;
                 });
 
-                // Animate particles in orbital pattern
-                const positions = particles.geometry.attributes.position.array;
-
-                for (let i = 0; i < particleCount; i++) {
+                // Animate spark particles (gear friction effect)
+                const sparkPos = sparks.geometry.attributes.position.array;
+                
+                for (let i = 0; i < sparkCount; i++) {
                     const i3 = i * 3;
-                    const vel = particleVelocities[i];
-
-                    vel.angle += vel.speed;
-                    vel.height += vel.verticalSpeed;
-
-                    // Keep particles within bounds
-                    if (vel.height > 2) vel.verticalSpeed = -Math.abs(vel.verticalSpeed);
-                    if (vel.height < -2) vel.verticalSpeed = Math.abs(vel.verticalSpeed);
-
-                    positions[i3] = Math.cos(vel.angle) * vel.radius;
-                    positions[i3 + 1] = vel.height;
-                    positions[i3 + 2] = Math.sin(vel.angle) * vel.radius;
+                    
+                    sparkLifetimes[i] -= 0.02;
+                    
+                    if (sparkLifetimes[i] <= 0) {
+                        // Respawn spark at a random gear
+                        const randomGear = gears[Math.floor(Math.random() * gears.length)];
+                        const gearPos = new THREE.Vector3();
+                        randomGear.mesh.getWorldPosition(gearPos);
+                        
+                        const angle = Math.random() * Math.PI * 2;
+                        sparkPos[i3] = gearPos.x + Math.cos(angle) * randomGear.radius;
+                        sparkPos[i3 + 1] = gearPos.y + (Math.random() - 0.5) * 0.2;
+                        sparkPos[i3 + 2] = gearPos.z + Math.sin(angle) * randomGear.radius;
+                        
+                        sparkLifetimes[i] = 1 + Math.random() * 0.5;
+                        
+                        sparkVelocities[i] = {
+                            x: (Math.random() - 0.5) * 0.06,
+                            y: 0.03 + Math.random() * 0.05,
+                            z: (Math.random() - 0.5) * 0.06
+                        };
+                    } else {
+                        sparkPos[i3] += sparkVelocities[i].x;
+                        sparkPos[i3 + 1] += sparkVelocities[i].y;
+                        sparkPos[i3 + 2] += sparkVelocities[i].z;
+                        
+                        sparkVelocities[i].y -= 0.002; // Gravity
+                    }
                 }
-                particles.geometry.attributes.position.needsUpdate = true;
+                sparks.geometry.attributes.position.needsUpdate = true;
+                sparksMaterial.opacity = 0.9 * (Math.sin(time * 5) * 0.3 + 0.7);
 
-                // Pulsing lights
-                light1.intensity = 4 + Math.sin(time * 2) * 1.5;
-                light2.intensity = 2 + Math.sin(time * 2 + Math.PI / 2) * 0.5;
-                light3.intensity = 2 + Math.sin(time * 2 + Math.PI) * 0.5;
+                // Animate energy field
+                const fieldPos = field.geometry.attributes.position.array;
+
+                for (let i = 0; i < fieldCount; i++) {
+                    const i3 = i * 3;
+                    const data = fieldData[i];
+                    
+                    data.angle += data.speed;
+                    data.height += data.verticalSpeed;
+                    
+                    if (data.height > 2.5) data.verticalSpeed = -Math.abs(data.verticalSpeed);
+                    if (data.height < -2.5) data.verticalSpeed = Math.abs(data.verticalSpeed);
+                    
+                    fieldPos[i3] = Math.cos(data.angle) * data.radius;
+                    fieldPos[i3 + 1] = data.height;
+                    fieldPos[i3 + 2] = Math.sin(data.angle) * data.radius;
+                }
+                field.geometry.attributes.position.needsUpdate = true;
+
+                // Dynamic lighting
+                mainLight.intensity = 5 + Math.sin(time * 3) * 2;
+                accentLight1.intensity = 3 + Math.sin(time * 2) * 1;
+                accentLight2.intensity = 3 + Math.sin(time * 2.5 + Math.PI) * 1;
+                accentLight3.intensity = 2 + Math.sin(time * 1.8) * 0.8;
 
                 renderer.render(scene, camera);
             }
@@ -717,37 +901,31 @@
 
             window.addEventListener('scroll', () => {
                 const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
-
-                // Clear the timeout throughout the scroll
+                
                 clearTimeout(scrollTimeout);
-
-                // Detect scroll direction with more tolerance
+                
                 const scrollDelta = scrollTop - lastScrollTop;
-
+                
                 if (scrollTop > scrollThreshold) {
                     if (scrollDelta > 10 && !isScrolling) {
-                        // Scrolling down with momentum
                         isScrolling = true;
                         header.classList.add('header-hidden');
                     } else if (scrollDelta < -10 && isScrolling) {
-                        // Scrolling up with momentum
                         isScrolling = false;
                         header.classList.remove('header-hidden');
                     }
                 } else {
-                    // Near the top of the page
                     isScrolling = false;
                     header.classList.remove('header-hidden');
                 }
-
-                // Set a timeout to show header if user stops scrolling
+                
                 scrollTimeout = setTimeout(() => {
                     if (scrollTop > scrollThreshold && isScrolling) {
                         header.classList.remove('header-hidden');
                         isScrolling = false;
                     }
                 }, 1500);
-
+                
                 lastScrollTop = scrollTop <= 0 ? 0 : scrollTop;
             });
         </script>
