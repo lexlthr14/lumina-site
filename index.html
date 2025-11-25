@@ -439,7 +439,7 @@
             base.position.y = -1.6;
             bulbGroup.add(base);
 
-            // Create gears inside the bulb
+            // Create gears inside the bulb with enhanced visuals
             function createGear(radius, teeth, thickness, color) {
                 const gearGroup = new THREE.Group();
 
@@ -522,6 +522,32 @@
                 gearGroup.userData.glowMaterial = glowMaterial;
 
                 return gearGroup;
+            }
+
+            // Center hub with rings
+            const hubGeometry = new THREE.CylinderGeometry(radius * 0.35, radius * 0.35, thickness * 1.8, 16);
+            const hubMaterial = new THREE.MeshPhongMaterial({
+                color: 0x222222,
+                emissive: color,
+                emissiveIntensity: 0.3,
+                metalness: 0.95,
+                shininess: 120
+            });
+            const hub = new THREE.Mesh(hubGeometry, hubMaterial);
+            gearGroup.add(hub);
+
+            // Add decorative center point light
+            const centerLight = new THREE.PointLight(color, 0.8, 3);
+            gearGroup.add(centerLight);
+            gearGroup.userData.centerLight = centerLight;
+
+            // Store original color for animation
+            gearGroup.userData.originalColor = color;
+            gearGroup.userData.gearMaterial = gearMaterial;
+            gearGroup.userData.glow = glow;
+            gearGroup.userData.glowMaterial = glowMaterial;
+
+            return gearGroup;
             }
 
             // Create multiple gears with different sizes and positions
