@@ -153,6 +153,34 @@
             box-shadow: 0 10px 40px rgba(99, 102, 241, 0.2);
         }
 
+        .platform-tags {
+            display: flex;
+            gap: 0.5rem;
+            margin-bottom: 0.75rem;
+            flex-wrap: wrap;
+        }
+
+        .platform-tag {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.35rem;
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: #a855f7;
+            border: 1px solid rgba(168, 85, 247, 0.4);
+            border-radius: 4px;
+            padding: 0.25rem 0.6rem;
+        }
+
+        .platform-tag svg {
+            width: 13px;
+            height: 13px;
+            fill: currentColor;
+            flex-shrink: 0;
+        }
+
         .app-card h3 {
             font-size: 1.8rem;
             margin-bottom: 1rem;
@@ -226,8 +254,10 @@
             border-radius: 12px;
             padding: 1.25rem 2rem;
             display: flex;
+            flex-direction: column;
             align-items: center;
             justify-content: center;
+            gap: 0.75rem;
             transition: all 0.3s ease;
             flex: 0 0 auto;
         }
@@ -249,6 +279,13 @@
 
         .partner-logo-card:hover img {
             filter: brightness(1.1);
+        }
+
+        .partner-tagline {
+            font-size: 0.85rem;
+            color: #a0a0a0;
+            text-align: center;
+            margin: 0;
         }
 
         .contact {
@@ -404,9 +441,11 @@
         <div class="partners-grid">
             <div class="partner-logo-card">
                 <img src="NFO.png" alt="NFO – National Financial Ombud Scheme South Africa">
+                <p class="partner-tagline">Financial dispute resolution for South Africans</p>
             </div>
             <div class="partner-logo-card">
                 <img src="BEAR.png" alt="BEAR Foundation – Bold, Empowered, Affirmed, Revived">
+                <p class="partner-tagline">Empowering women survivors of gender-based violence</p>
             </div>
         </div>
     </section>
@@ -420,25 +459,39 @@
 
     <script>
         // ============================================
+        // PLATFORM ICONS (inline SVG)
+        // ============================================
+        const icons = {
+            ios: `<svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.8-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M13 3.5c.73-.83 1.94-1.46 2.94-1.5.13 1.17-.34 2.35-1.04 3.19-.69.85-1.83 1.51-2.95 1.42-.15-1.15.41-2.35 1.05-3.11z"/></svg>`,
+            android: `<svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M17.523 15.341a.5.5 0 0 1-.5.5H6.977a.5.5 0 0 1-.5-.5V9.115c0-.276.224-.5.5-.5h10.046c.276 0 .5.224.5.5v6.226zM7.5 17.5a.5.5 0 0 0 .5.5h.5v2a.75.75 0 0 0 1.5 0v-2h4v2a.75.75 0 0 0 1.5 0v-2h.5a.5.5 0 0 0 .5-.5v-.659H7.5v.659zM14.829 4.308l.885-1.763a.25.25 0 0 0-.447-.224l-.896 1.791A5.948 5.948 0 0 0 12 3.75c-.835 0-1.628.174-2.371.362L8.733 2.321a.25.25 0 0 0-.447.224l.885 1.763C7.247 5.259 6.25 6.9 6.25 8.75h11.5c0-1.85-.997-3.491-2.921-4.442zM10 7a.75.75 0 1 1 0-1.5A.75.75 0 0 1 10 7zm4 0a.75.75 0 1 1 0-1.5A.75.75 0 0 1 14 7z"/></svg>`,
+            web: `<svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z"/></svg>`
+        };
+
+        // ============================================
         // APP MANAGEMENT
         // ============================================
         const apps = [
             {
                 title: "GBV Safety App",
+                platforms: ["ios", "android"],
                 description: "Secure evidence vault, instant SOS alerts, reporting tools, a decoy interface, and clear legal and crisis resources — all in one protected, easy-to-use space for survivors of gender-based violence.",
                 videoUrl: "https://www.youtube.com/shorts/obar6YU03Iw"
             },
             {
                 title: "Food Transparency Scanner",
+                platforms: ["ios", "android"],
                 description: "Scan barcodes for instant health recommendations. Breaks down complex ingredients into simple English, helping people make informed choices about what they eat.",
                 videoUrl: "https://www.youtube.com/shorts/S-kYKuDZ5Lk"
             },
             {
                 title: "NFO Remuneration Web App",
+                platforms: ["web"],
                 description: "A centralised, role-based web application that replaces Excel and email-driven salary reviews with a structured, auditable workflow — enabling HR to manage remuneration cycles and budgets, division managers to submit salary and bonus proposals, and executives to monitor real-time budget usage and approve decisions, all while ensuring compliance, data security, and seamless export to external processors.",
                 videoUrl: "https://youtu.be/NLxN1rpCx14"
             }
         ];
+
+        const platformLabels = { ios: "iOS", android: "Android", web: "Web App" };
 
         function generateAppCards() {
             const container = document.getElementById('apps-container');
@@ -447,9 +500,14 @@
             </svg>`;
 
             apps.forEach(app => {
+                const tagsHTML = app.platforms.map(p =>
+                    `<span class="platform-tag">${icons[p]}${platformLabels[p]}</span>`
+                ).join('');
+
                 const card = document.createElement('div');
                 card.className = 'app-card';
                 card.innerHTML = `
+                    <div class="platform-tags">${tagsHTML}</div>
                     <h3>${app.title}</h3>
                     <p>${app.description}</p>
                     <a href="${app.videoUrl}" class="video-link" aria-label="Watch ${app.title} demo">
