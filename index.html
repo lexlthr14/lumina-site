@@ -7,7 +7,6 @@
     <title>Lumina - Custom Software for NGOs</title>
     <link rel="icon" type="image/png" href="lumina-logo.png">
     <link rel="apple-touch-icon" href="lumina-logo.png">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
     <style>
         * {
             margin: 0;
@@ -463,357 +462,291 @@
         <a href="mailto:wothando@luminaholdings.co.za" class="email-link">wothando@luminaholdings.co.za</a>
     </section>
 
-    <script>
-        // ============================================
-        // PLATFORM ICONS (inline SVG)
-        // ============================================
-        const icons = {
-            ios: `<svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.8-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M13 3.5c.73-.83 1.94-1.46 2.94-1.5.13 1.17-.34 2.35-1.04 3.19-.69.85-1.83 1.51-2.95 1.42-.15-1.15.41-2.35 1.05-3.11z"/></svg>`,
-            android: `<svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M17.523 15.341a.5.5 0 0 1-.5.5H6.977a.5.5 0 0 1-.5-.5V9.115c0-.276.224-.5.5-.5h10.046c.276 0 .5.224.5.5v6.226zM7.5 17.5a.5.5 0 0 0 .5.5h.5v2a.75.75 0 0 0 1.5 0v-2h4v2a.75.75 0 0 0 1.5 0v-2h.5a.5.5 0 0 0 .5-.5v-.659H7.5v.659zM14.829 4.308l.885-1.763a.25.25 0 0 0-.447-.224l-.896 1.791A5.948 5.948 0 0 0 12 3.75c-.835 0-1.628.174-2.371.362L8.733 2.321a.25.25 0 0 0-.447.224l.885 1.763C7.247 5.259 6.25 6.9 6.25 8.75h11.5c0-1.85-.997-3.491-2.921-4.442zM10 7a.75.75 0 1 1 0-1.5A.75.75 0 0 1 10 7zm4 0a.75.75 0 1 1 0-1.5A.75.75 0 0 1 14 7z"/></svg>`,
-            web: `<svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z"/></svg>`
-        };
+    <canvas id="prism-canvas"
+        style="position:absolute;top:0;left:0;width:100%;height:100%;z-index:1;cursor:none;"></canvas>
+    <div id="halo"
+        style="position:fixed;width:60px;height:60px;border-radius:50%;background:radial-gradient(circle,rgba(99,102,241,0.35) 0%,rgba(168,85,247,0.12) 50%,transparent 70%);pointer-events:none;transform:translate(-50%,-50%);mix-blend-mode:screen;z-index:9999;transition:opacity 0.2s;">
+    </div>
+    <div id="dot"
+        style="position:fixed;width:8px;height:8px;border-radius:50%;background:#a855f7;pointer-events:none;transform:translate(-50%,-50%);z-index:10000;box-shadow:0 0 6px #6366f1;">
+    </div>
 
-        // ============================================
-        // APP MANAGEMENT
-        // ============================================
-        const apps = [
-            {
-                title: "GBV Safety App",
-                platforms: ["ios", "android"],
-                description: "Secure evidence vault, instant SOS alerts, reporting tools, a decoy interface, and clear legal and crisis resources — all in one protected, easy-to-use space for survivors of gender-based violence.",
-                videoUrl: "https://www.youtube.com/shorts/obar6YU03Iw"
-            },
-            {
-                title: "Food Transparency Scanner",
-                platforms: ["ios", "android"],
-                description: "Scan barcodes for instant health recommendations. Breaks down complex ingredients into simple English, helping people make informed choices about what they eat.",
-                videoUrl: "https://www.youtube.com/shorts/S-kYKuDZ5Lk"
-            },
-            {
-                title: "NFO Remuneration Web App",
-                platforms: ["web"],
-                description: "A centralised, role-based web application that replaces Excel and email-driven salary reviews with a structured, auditable workflow — enabling HR to manage remuneration cycles and budgets, division managers to submit salary and bonus proposals, and executives to monitor real-time budget usage and approve decisions, all while ensuring compliance, data security, and seamless export to external processors.",
-                videoUrl: "https://youtu.be/NLxN1rpCx14"
-            }
+    <script>
+        const canvas = document.getElementById('prism-canvas');
+        const ctx = canvas.getContext('2d');
+        const halo = document.getElementById('halo');
+        const dot = document.getElementById('dot');
+
+        let W, H, cx, cy, mouse = { x: 0, y: 0 }, t = 0;
+
+        function resize() {
+            W = canvas.width = window.innerWidth;
+            H = canvas.height = window.innerHeight;
+            cx = W / 2; cy = H / 2;
+        }
+        resize();
+        window.addEventListener('resize', resize);
+
+        document.addEventListener('mousemove', e => {
+            mouse.x = e.clientX; mouse.y = e.clientY;
+            halo.style.left = e.clientX + 'px';
+            halo.style.top = e.clientY + 'px';
+            dot.style.left = e.clientX + 'px';
+            dot.style.top = e.clientY + 'px';
+        });
+
+        const NODE_COUNT = 70;
+        const CONNECT_DIST = 110;
+        const nodes = Array.from({ length: NODE_COUNT }, () => ({
+            x: Math.random() * window.innerWidth,
+            y: Math.random() * window.innerHeight,
+            vx: (Math.random() - 0.5) * 0.4,
+            vy: (Math.random() - 0.5) * 0.4,
+            r: 1.5 + Math.random() * 2,
+            bright: 0
+        }));
+
+        const rings = [
+            { r: 110, nodeCount: 9, speed: 0.003, phase: 0, color: [99, 102, 241] },
+            { r: 170, nodeCount: 13, speed: -0.0019, phase: 1.1, color: [168, 85, 247] },
+            { r: 230, nodeCount: 18, speed: 0.0013, phase: 2.4, color: [59, 130, 246] }
         ];
 
-        const platformLabels = { ios: "iOS", android: "Android", web: "Web App" };
+        const gears = [
+            { x: 0, y: 0, r: 52, teeth: 12, rot: 0, speed: 0.012, color: '#6366f1', inner: 16 },
+            { x: 88, y: 18, r: 34, teeth: 8, rot: 0.39, speed: -0.018, color: '#a855f7', inner: 10 },
+            { x: -82, y: 22, r: 28, teeth: 7, rot: 0.5, speed: 0.022, color: '#3b82f6', inner: 8 },
+            { x: 20, y: -76, r: 24, teeth: 6, rot: 1.0, speed: -0.028, color: '#fbbf24', inner: 7 },
+            { x: -30, y: 72, r: 20, teeth: 5, rot: 0.3, speed: 0.034, color: '#ec4899', inner: 6 },
+        ];
 
-        function generateAppCards() {
-            const container = document.getElementById('apps-container');
-            const youtubeIcon = `<svg class="youtube-icon" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
-                <path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/>
-            </svg>`;
+        function drawGear(g, mx, my) {
+            const gx = cx + g.x, gy = cy + g.y;
+            const toothH = g.r * 0.22;
+            const toothW = (2 * Math.PI / g.teeth) * 0.42;
+            const dx = mx - gx, dy = my - gy;
+            const dist = Math.sqrt(dx * dx + dy * dy);
+            const pull = Math.max(0, 1 - dist / 300);
 
-            apps.forEach(app => {
-                const tagsHTML = app.platforms.map(p =>
-                    `<span class="platform-tag">${icons[p]}${platformLabels[p]}</span>`
-                ).join('');
+            ctx.save();
+            ctx.translate(gx, gy);
+            ctx.rotate(g.rot);
 
-                const card = document.createElement('div');
-                card.className = 'app-card';
-                card.innerHTML = `
-                    <div class="platform-tags">${tagsHTML}</div>
-                    <h3>${app.title}</h3>
-                    <p>${app.description}</p>
-                    <a href="${app.videoUrl}" class="video-link" aria-label="Watch ${app.title} demo">
-                        ${youtubeIcon}
-                        Watch Demo
-                    </a>
-                `;
-                container.appendChild(card);
+            const grd = ctx.createRadialGradient(0, 0, g.r * 0.5, 0, 0, g.r + toothH + 8);
+            grd.addColorStop(0, g.color + '55');
+            grd.addColorStop(1, 'transparent');
+            ctx.fillStyle = grd;
+            ctx.beginPath(); ctx.arc(0, 0, g.r + toothH + 8, 0, Math.PI * 2); ctx.fill();
+
+            ctx.beginPath();
+            for (let i = 0; i < g.teeth; i++) {
+                const a = (i / g.teeth) * Math.PI * 2;
+                const a1 = a - toothW / 2, a2 = a + toothW / 2;
+                ctx.lineTo(Math.cos(a1) * g.r, Math.sin(a1) * g.r);
+                ctx.lineTo(Math.cos(a - toothW * 0.1) * (g.r + toothH), Math.sin(a - toothW * 0.1) * (g.r + toothH));
+                ctx.lineTo(Math.cos(a + toothW * 0.1) * (g.r + toothH), Math.sin(a + toothW * 0.1) * (g.r + toothH));
+                ctx.lineTo(Math.cos(a2) * g.r, Math.sin(a2) * g.r);
+            }
+            ctx.closePath();
+            ctx.fillStyle = g.color + (pull > 0.1 ? 'cc' : '88');
+            ctx.strokeStyle = g.color + 'ff';
+            ctx.lineWidth = 1.2;
+            ctx.fill(); ctx.stroke();
+
+            ctx.beginPath(); ctx.arc(0, 0, g.inner, 0, Math.PI * 2);
+            ctx.fillStyle = '#0a0a0a';
+            ctx.strokeStyle = g.color + 'aa';
+            ctx.lineWidth = 1.5;
+            ctx.fill(); ctx.stroke();
+
+            for (let i = 0; i < 4; i++) {
+                const sa = (i / 4) * Math.PI * 2;
+                ctx.beginPath();
+                ctx.moveTo(Math.cos(sa) * g.inner, Math.sin(sa) * g.inner);
+                ctx.lineTo(Math.cos(sa) * (g.r * 0.75), Math.sin(sa) * (g.r * 0.75));
+                ctx.strokeStyle = g.color + '66';
+                ctx.lineWidth = 2;
+                ctx.stroke();
+            }
+            ctx.restore();
+        }
+
+        function drawRays(mx, my) {
+            const pulse = 0.7 + 0.3 * Math.sin(t * 1.8);
+            const angleToMouse = Math.atan2(my - cy, mx - cx);
+            const distToMouse = Math.min(Math.sqrt((mx - cx) ** 2 + (my - cy) ** 2), 500);
+            const bend = distToMouse / 500;
+
+            for (let i = 0; i < 12; i++) {
+                const baseAngle = (i / 12) * Math.PI * 2 + t * 0.15;
+                const bendAmount = bend * 0.7 * Math.cos(baseAngle - angleToMouse);
+                const angle = baseAngle + bendAmount;
+                const rayLen = (80 + 140 * pulse + 60 * Math.sin(t * 2 + i)) * (0.6 + 0.4 * bend);
+                const rayStart = 30;
+
+                const x1 = cx + Math.cos(angle) * rayStart;
+                const y1 = cy + Math.sin(angle) * rayStart;
+                const x2 = cx + Math.cos(angle) * (rayStart + rayLen);
+                const y2 = cy + Math.sin(angle) * (rayStart + rayLen);
+
+                const grad = ctx.createLinearGradient(x1, y1, x2, y2);
+                const hue = 230 + (i / 12) * 80;
+                grad.addColorStop(0, `hsla(${hue},80%,65%,${0.55 * pulse})`);
+                grad.addColorStop(0.5, `hsla(${hue + 20},75%,60%,${0.3 * pulse})`);
+                grad.addColorStop(1, 'transparent');
+
+                ctx.beginPath();
+                ctx.moveTo(x1, y1); ctx.lineTo(x2, y2);
+                ctx.strokeStyle = grad;
+                ctx.lineWidth = 1.5 + 1.5 * Math.sin(t * 3 + i);
+                ctx.stroke();
+            }
+        }
+
+        function drawCore() {
+            const p = 0.5 + 0.5 * Math.sin(t * 2.2);
+            const g = ctx.createRadialGradient(cx, cy, 2, cx, cy, 60);
+            g.addColorStop(0, `rgba(255,200,80,${0.9 + 0.1 * p})`);
+            g.addColorStop(0.15, `rgba(255,160,40,${0.7 * p})`);
+            g.addColorStop(0.4, `rgba(99,102,241,${0.4 * p})`);
+            g.addColorStop(1, 'transparent');
+            ctx.beginPath(); ctx.arc(cx, cy, 60, 0, Math.PI * 2);
+            ctx.fillStyle = g; ctx.fill();
+
+            ctx.beginPath(); ctx.arc(cx, cy, 8 + 3 * p, 0, Math.PI * 2);
+            ctx.fillStyle = `rgba(255,240,160,${0.95 + 0.05 * p})`;
+            ctx.fill();
+        }
+
+        function drawOrbits(mx, my) {
+            rings.forEach(ring => {
+                const dx = mx - cx, dy = my - cy;
+                const dist = Math.sqrt(dx * dx + dy * dy);
+                const influence = Math.max(0, 1 - dist / 400);
+                const [r, g, b] = ring.color;
+
+                ctx.beginPath();
+                ctx.arc(cx, cy, ring.r, 0, Math.PI * 2);
+                ctx.strokeStyle = `rgba(${r},${g},${b},0.12)`;
+                ctx.lineWidth = 0.8;
+                ctx.stroke();
+
+                for (let i = 0; i < ring.nodeCount; i++) {
+                    const a = (i / ring.nodeCount) * Math.PI * 2 + ring.phase;
+                    const nx = cx + Math.cos(a) * ring.r;
+                    const ny = cy + Math.sin(a) * ring.r;
+                    const ndx = mx - nx, ndy = my - ny;
+                    const nd = Math.sqrt(ndx * ndx + ndy * ndy);
+                    const lit = Math.max(0, 1 - nd / 80);
+                    const sz = 2.5 + 3 * lit + 1.5 * influence;
+                    const alpha = 0.5 + 0.5 * lit;
+
+                    const ng = ctx.createRadialGradient(nx, ny, 0, nx, ny, sz * 2.5);
+                    ng.addColorStop(0, `rgba(${r},${g},${b},${alpha})`);
+                    ng.addColorStop(1, 'transparent');
+                    ctx.beginPath(); ctx.arc(nx, ny, sz * 2.5, 0, Math.PI * 2);
+                    ctx.fillStyle = ng; ctx.fill();
+
+                    ctx.beginPath(); ctx.arc(nx, ny, sz, 0, Math.PI * 2);
+                    ctx.fillStyle = `rgba(${r},${g},${b},${alpha})`;
+                    ctx.fill();
+                }
             });
         }
 
-        generateAppCards();
-
-        // ============================================
-        // THREE.JS MECHANICAL LIGHT BULB ANIMATION
-        // ============================================
-        const canvas = document.getElementById('prism-canvas');
-        const scene = new THREE.Scene();
-        const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
-        const renderer = new THREE.WebGLRenderer({ canvas, alpha: true, antialias: true });
-
-        renderer.setSize(window.innerWidth, window.innerHeight);
-        renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-        camera.position.z = 6;
-
-        const bulbGroup = new THREE.Group();
-
-        const bulbGeometry = new THREE.SphereGeometry(1.2, 32, 32);
-        const bulbMaterial = new THREE.MeshPhongMaterial({
-            color: 0xffffff,
-            emissive: 0xffaa00,
-            emissiveIntensity: 0.5,
-            transparent: true,
-            opacity: 0.3,
-            shininess: 100,
-            specular: 0xffffff
-        });
-        const bulb = new THREE.Mesh(bulbGeometry, bulbMaterial);
-        bulbGroup.add(bulb);
-
-        const filamentGeometry = new THREE.SphereGeometry(0.3, 16, 16);
-        const filamentMaterial = new THREE.MeshBasicMaterial({
-            color: 0xffff00,
-            transparent: true,
-            opacity: 0.9
-        });
-        const filament = new THREE.Mesh(filamentGeometry, filamentMaterial);
-        bulbGroup.add(filament);
-
-        const baseGeometry = new THREE.CylinderGeometry(0.5, 0.6, 0.8, 16);
-        const baseMaterial = new THREE.MeshPhongMaterial({
-            color: 0x888888,
-            metalness: 0.8,
-            shininess: 80
-        });
-        const base = new THREE.Mesh(baseGeometry, baseMaterial);
-        base.position.y = -1.6;
-        bulbGroup.add(base);
-
-        function createGear(radius, teeth, thickness, color) {
-            const gearGroup = new THREE.Group();
-            const gearGeometry = new THREE.CylinderGeometry(radius, radius, thickness, teeth * 2);
-            const gearMaterial = new THREE.MeshPhongMaterial({
-                color: color,
-                emissive: color,
-                emissiveIntensity: 0.3,
-                metalness: 0.7,
-                shininess: 60
+        function drawNeural(mx, my) {
+            nodes.forEach(n => {
+                n.x += n.vx; n.y += n.vy;
+                if (n.x < 0 || n.x > W) n.vx *= -1;
+                if (n.y < 0 || n.y > H) n.vy *= -1;
+                const d = Math.sqrt((n.x - mx) ** 2 + (n.y - my) ** 2);
+                n.bright = Math.max(n.bright * 0.93, d < 90 ? 1 - d / 90 : 0);
             });
-            const gearBody = new THREE.Mesh(gearGeometry, gearMaterial);
-            gearGroup.add(gearBody);
 
-            for (let i = 0; i < teeth; i++) {
-                const angle = (i / teeth) * Math.PI * 2;
-                const toothGeometry = new THREE.BoxGeometry(0.15, thickness * 1.2, radius * 0.3);
-                const tooth = new THREE.Mesh(toothGeometry, gearMaterial);
-                tooth.position.x = Math.cos(angle) * (radius + 0.1);
-                tooth.position.z = Math.sin(angle) * (radius + 0.1);
-                tooth.rotation.y = angle;
-                gearGroup.add(tooth);
+            for (let i = 0; i < nodes.length; i++) {
+                for (let j = i + 1; j < nodes.length; j++) {
+                    const a = nodes[i], b = nodes[j];
+                    const dx = a.x - b.x, dy = a.y - b.y;
+                    const d = Math.sqrt(dx * dx + dy * dy);
+                    if (d < CONNECT_DIST) {
+                        const combined = Math.max(a.bright, b.bright);
+                        const base = (1 - d / CONNECT_DIST) * 0.18;
+                        const bright = base + combined * 0.55;
+                        const hue = 230 + combined * 60;
+                        ctx.beginPath();
+                        ctx.moveTo(a.x, a.y); ctx.lineTo(b.x, b.y);
+                        ctx.strokeStyle = `hsla(${hue},80%,70%,${bright})`;
+                        ctx.lineWidth = 0.5 + combined * 1.2;
+                        ctx.stroke();
+                    }
+                }
             }
 
-            const hubGeometry = new THREE.CylinderGeometry(radius * 0.3, radius * 0.3, thickness * 1.5, 16);
-            const hubMaterial = new THREE.MeshPhongMaterial({ color: 0x444444, metalness: 0.9 });
-            const hub = new THREE.Mesh(hubGeometry, hubMaterial);
-            gearGroup.add(hub);
-
-            return gearGroup;
-        }
-
-        const gears = [];
-
-        const gear1 = createGear(0.6, 12, 0.15, 0x6366f1);
-        gear1.position.set(0, 0.3, 0);
-        gear1.rotation.x = Math.PI / 2;
-        gears.push({ mesh: gear1, speed: 0.02, axis: 'z' });
-        bulbGroup.add(gear1);
-
-        const gear2 = createGear(0.4, 8, 0.12, 0xa855f7);
-        gear2.position.set(0.7, -0.2, 0.3);
-        gear2.rotation.x = Math.PI / 2;
-        gear2.rotation.y = Math.PI / 6;
-        gears.push({ mesh: gear2, speed: -0.03, axis: 'z' });
-        bulbGroup.add(gear2);
-
-        const gear3 = createGear(0.35, 10, 0.1, 0x3b82f6);
-        gear3.position.set(-0.6, 0, 0.4);
-        gear3.rotation.x = Math.PI / 3;
-        gear3.rotation.z = Math.PI / 4;
-        gears.push({ mesh: gear3, speed: 0.025, axis: 'y' });
-        bulbGroup.add(gear3);
-
-        const gear4 = createGear(0.3, 6, 0.1, 0xfbbf24);
-        gear4.position.set(0, -0.5, 0.2);
-        gear4.rotation.x = Math.PI / 2;
-        gears.push({ mesh: gear4, speed: -0.04, axis: 'z' });
-        bulbGroup.add(gear4);
-
-        const gear5 = createGear(0.25, 8, 0.08, 0xec4899);
-        gear5.position.set(-0.4, 0.4, -0.2);
-        gear5.rotation.y = Math.PI / 4;
-        gear5.rotation.z = Math.PI / 6;
-        gears.push({ mesh: gear5, speed: 0.035, axis: 'x' });
-        bulbGroup.add(gear5);
-
-        scene.add(bulbGroup);
-
-        const rods = [];
-        for (let i = 0; i < gears.length - 1; i++) {
-            const rodGeometry = new THREE.CylinderGeometry(0.03, 0.03, 1, 8);
-            const rodMaterial = new THREE.MeshPhongMaterial({ color: 0x666666, metalness: 0.8 });
-            const rod = new THREE.Mesh(rodGeometry, rodMaterial);
-            rods.push({ mesh: rod, gear1: gears[i].mesh, gear2: gears[i + 1].mesh });
-            bulbGroup.add(rod);
-        }
-
-        const particleCount = 80;
-        const particlesGeometry = new THREE.BufferGeometry();
-        const particlePositions = [];
-        const particleVelocities = [];
-
-        for (let i = 0; i < particleCount; i++) {
-            const angle = Math.random() * Math.PI * 2;
-            const radius = 2 + Math.random() * 1;
-            const height = (Math.random() - 0.5) * 3;
-            particlePositions.push(Math.cos(angle) * radius, height, Math.sin(angle) * radius);
-            particleVelocities.push({
-                angle, radius, height,
-                speed: 0.01 + Math.random() * 0.02,
-                verticalSpeed: (Math.random() - 0.5) * 0.01
+            nodes.forEach(n => {
+                const grd = ctx.createRadialGradient(n.x, n.y, 0, n.x, n.y, n.r * 3 + n.bright * 12);
+                grd.addColorStop(0, `rgba(168,85,247,${0.7 + n.bright * 0.3})`);
+                grd.addColorStop(1, 'transparent');
+                ctx.beginPath(); ctx.arc(n.x, n.y, n.r * 3 + n.bright * 12, 0, Math.PI * 2);
+                ctx.fillStyle = grd; ctx.fill();
+                ctx.beginPath(); ctx.arc(n.x, n.y, n.r + n.bright * 3, 0, Math.PI * 2);
+                ctx.fillStyle = `rgba(200,160,255,${0.6 + n.bright * 0.4})`;
+                ctx.fill();
             });
         }
 
-        particlesGeometry.setAttribute('position', new THREE.Float32BufferAttribute(particlePositions, 3));
-        const particleMaterial = new THREE.PointsMaterial({
-            color: 0xffaa00, size: 0.08, transparent: true, opacity: 0.8, blending: THREE.AdditiveBlending
-        });
-        const particles = new THREE.Points(particlesGeometry, particleMaterial);
-        scene.add(particles);
+        function frame() {
+            requestAnimationFrame(frame);
+            t += 0.016;
 
-        const light1 = new THREE.PointLight(0xffaa00, 4, 100);
-        light1.position.set(0, 0, 0);
-        bulbGroup.add(light1);
+            ctx.clearRect(0, 0, W, H);
+            ctx.fillStyle = '#0a0a0a';
+            ctx.fillRect(0, 0, W, H);
 
-        const light2 = new THREE.PointLight(0x6366f1, 2, 100);
-        light2.position.set(5, 3, 5);
-        scene.add(light2);
+            const mx = mouse.x || cx, my = mouse.y || cy;
 
-        const light3 = new THREE.PointLight(0xa855f7, 2, 100);
-        light3.position.set(-5, -3, 5);
-        scene.add(light3);
-
-        const ambientLight = new THREE.AmbientLight(0x404040, 0.5);
-        scene.add(ambientLight);
-
-        let mouseX = 0, mouseY = 0, targetX = 0, targetY = 0;
-
-        document.addEventListener('mousemove', (e) => {
-            mouseX = (e.clientX / window.innerWidth) * 2 - 1;
-            mouseY = -(e.clientY / window.innerHeight) * 2 + 1;
-        });
-
-        let time = 0;
-
-        function animate() {
-            requestAnimationFrame(animate);
-            time += 0.01;
-            targetX += (mouseX - targetX) * 0.05;
-            targetY += (mouseY - targetY) * 0.05;
-
-            bulbGroup.rotation.y = time * 0.2 + targetX * 0.5;
-            bulbGroup.rotation.x = targetY * 0.3;
-
-            bulbMaterial.emissiveIntensity = 0.5 + Math.sin(time * 2) * 0.3;
-            filamentMaterial.opacity = 0.7 + Math.sin(time * 3) * 0.2;
-
-            gears.forEach((gearData) => {
-                if (gearData.axis === 'z') gearData.mesh.rotation.z += gearData.speed;
-                else if (gearData.axis === 'y') gearData.mesh.rotation.y += gearData.speed;
-                else if (gearData.axis === 'x') gearData.mesh.rotation.x += gearData.speed;
-            });
-
-            rods.forEach((rodData) => {
-                const start = new THREE.Vector3();
-                const end = new THREE.Vector3();
-                rodData.gear1.getWorldPosition(start);
-                rodData.gear2.getWorldPosition(end);
-                const midpoint = new THREE.Vector3().addVectors(start, end).multiplyScalar(0.5);
-                rodData.mesh.position.copy(midpoint);
-                const direction = new THREE.Vector3().subVectors(end, start);
-                rodData.mesh.scale.y = direction.length();
-                rodData.mesh.quaternion.setFromUnitVectors(new THREE.Vector3(0, 1, 0), direction.normalize());
-            });
-
-            const positions = particles.geometry.attributes.position.array;
-            for (let i = 0; i < particleCount; i++) {
-                const i3 = i * 3;
-                const vel = particleVelocities[i];
-                vel.angle += vel.speed;
-                vel.height += vel.verticalSpeed;
-                if (vel.height > 2) vel.verticalSpeed = -Math.abs(vel.verticalSpeed);
-                if (vel.height < -2) vel.verticalSpeed = Math.abs(vel.verticalSpeed);
-                positions[i3] = Math.cos(vel.angle) * vel.radius;
-                positions[i3 + 1] = vel.height;
-                positions[i3 + 2] = Math.sin(vel.angle) * vel.radius;
-            }
-            particles.geometry.attributes.position.needsUpdate = true;
-
-            light1.intensity = 4 + Math.sin(time * 2) * 1.5;
-            light2.intensity = 2 + Math.sin(time * 2 + Math.PI / 2) * 0.5;
-            light3.intensity = 2 + Math.sin(time * 2 + Math.PI) * 0.5;
-
-            renderer.render(scene, camera);
+            drawNeural(mx, my);
+            drawRays(mx, my);
+            drawOrbits(mx, my);
+            gears.forEach(g => { g.rot += g.speed; drawGear(g, mx, my); });
+            rings.forEach(r => { r.phase += r.speed; });
+            drawCore();
         }
-        animate();
 
-        window.addEventListener('resize', () => {
-            camera.aspect = window.innerWidth / window.innerHeight;
-            camera.updateProjectionMatrix();
-            renderer.setSize(window.innerWidth, window.innerHeight);
-            renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+        frame();
+
+        // Scroll hide/show header (kept from original)
+        let lastScrollTop = 0;
+        const header = document.querySelector('header');
+        const scrollThreshold = 100;
+        let scrollTimeout, isScrolling = false;
+
+        window.addEventListener('scroll', () => {
+            const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+            clearTimeout(scrollTimeout);
+            const scrollDelta = scrollTop - lastScrollTop;
+            if (scrollTop > scrollThreshold) {
+                if (scrollDelta > 10 && !isScrolling) { isScrolling = true; header.classList.add('header-hidden'); }
+                else if (scrollDelta < -10 && isScrolling) { isScrolling = false; header.classList.remove('header-hidden'); }
+            } else { isScrolling = false; header.classList.remove('header-hidden'); }
+            scrollTimeout = setTimeout(() => {
+                if (scrollTop > scrollThreshold && isScrolling) { header.classList.remove('header-hidden'); isScrolling = false; }
+            }, 1500);
+            lastScrollTop = scrollTop <= 0 ? 0 : scrollTop;
         });
 
-        // ============================================
-        // INTERSECTION OBSERVER FOR APP CARDS
-        // ============================================
+        // Intersection observer for app cards
         const observer = new IntersectionObserver((entries) => {
-            entries.forEach(entry => {
-                if (entry.isIntersecting) entry.target.classList.add('visible');
-            });
+            entries.forEach(entry => { if (entry.isIntersecting) entry.target.classList.add('visible'); });
         }, { threshold: 0.1 });
-
         document.querySelectorAll('.app-card').forEach(card => observer.observe(card));
 
-        // ============================================
-        // SMOOTH SCROLL FOR ANCHOR LINKS
-        // ============================================
+        // Smooth scroll
         document.querySelectorAll('a[href^="#"]').forEach(anchor => {
             anchor.addEventListener('click', function (e) {
                 e.preventDefault();
                 const target = document.querySelector(this.getAttribute('href'));
                 if (target) target.scrollIntoView({ behavior: 'smooth' });
             });
-        });
-
-        // ============================================
-        // HEADER HIDE/SHOW ON SCROLL
-        // ============================================
-        let lastScrollTop = 0;
-        const header = document.querySelector('header');
-        const scrollThreshold = 100;
-        let scrollTimeout;
-        let isScrolling = false;
-
-        window.addEventListener('scroll', () => {
-            const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
-            clearTimeout(scrollTimeout);
-            const scrollDelta = scrollTop - lastScrollTop;
-
-            if (scrollTop > scrollThreshold) {
-                if (scrollDelta > 10 && !isScrolling) {
-                    isScrolling = true;
-                    header.classList.add('header-hidden');
-                } else if (scrollDelta < -10 && isScrolling) {
-                    isScrolling = false;
-                    header.classList.remove('header-hidden');
-                }
-            } else {
-                isScrolling = false;
-                header.classList.remove('header-hidden');
-            }
-
-            scrollTimeout = setTimeout(() => {
-                if (scrollTop > scrollThreshold && isScrolling) {
-                    header.classList.remove('header-hidden');
-                    isScrolling = false;
-                }
-            }, 1500);
-
-            lastScrollTop = scrollTop <= 0 ? 0 : scrollTop;
         });
     </script>
 </body>
