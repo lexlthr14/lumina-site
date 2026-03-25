@@ -19,21 +19,48 @@
             background: #0a0a0a;
             color: #e0e0e0;
             overflow-x: hidden;
+            cursor: none;
         }
 
+        /* Custom cursor */
+        #cursor-halo {
+            position: fixed;
+            width: 72px;
+            height: 72px;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(99, 102, 241, 0.4) 0%, rgba(168, 85, 247, 0.15) 50%, transparent 70%);
+            pointer-events: none;
+            transform: translate(-50%, -50%);
+            mix-blend-mode: screen;
+            z-index: 99999;
+            transition: width 0.15s, height 0.15s;
+        }
+
+        #cursor-dot {
+            position: fixed;
+            width: 7px;
+            height: 7px;
+            border-radius: 50%;
+            background: #c084fc;
+            pointer-events: none;
+            transform: translate(-50%, -50%);
+            z-index: 100000;
+            box-shadow: 0 0 8px #6366f1, 0 0 16px rgba(99, 102, 241, 0.5);
+        }
+
+        /* Header */
         header {
             position: fixed;
             top: 0;
             width: 100%;
             padding: 1rem 5%;
-            background: rgba(10, 10, 10, 0.95);
-            backdrop-filter: blur(10px);
-            z-index: 100;
-            border-bottom: 1px solid rgba(99, 102, 241, 0.1);
+            background: rgba(10, 10, 10, 0.92);
+            backdrop-filter: blur(12px);
+            z-index: 1000;
+            border-bottom: 1px solid rgba(99, 102, 241, 0.12);
             display: flex;
             align-items: center;
             transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-            will-change: transform, opacity;
         }
 
         header.header-hidden {
@@ -60,6 +87,7 @@
             letter-spacing: 2px;
         }
 
+        /* Hero */
         .hero {
             position: relative;
             height: 100vh;
@@ -71,13 +99,14 @@
             overflow: hidden;
         }
 
-        #prism-canvas {
+        #hero-canvas {
             position: absolute;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
             z-index: 1;
+            display: block;
         }
 
         .hero-content {
@@ -85,6 +114,7 @@
             z-index: 2;
             max-width: 900px;
             padding: 0 2rem;
+            pointer-events: none;
         }
 
         h1 {
@@ -105,6 +135,7 @@
             animation: fadeInUp 1s ease-out 0.2s backwards;
         }
 
+        /* Sections */
         section {
             padding: 6rem 5%;
             max-width: 1200px;
@@ -124,6 +155,7 @@
             line-height: 1.6;
         }
 
+        /* App Cards */
         .apps-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
@@ -217,6 +249,7 @@
             height: 20px;
         }
 
+        /* About */
         .about {
             background: rgba(99, 102, 241, 0.05);
             border-radius: 16px;
@@ -224,7 +257,7 @@
             margin-top: 3rem;
         }
 
-        /* ── Partner Logos ── */
+        /* Partners */
         .partners {
             text-align: center;
             padding-top: 2rem;
@@ -287,6 +320,7 @@
             margin: 0;
         }
 
+        /* Contact */
         .contact {
             text-align: center;
         }
@@ -388,6 +422,9 @@
 </head>
 
 <body>
+    <div id="cursor-halo"></div>
+    <div id="cursor-dot"></div>
+
     <header>
         <div class="logo-container">
             <img src="lumina-logo.png" alt="Lumina Logo" class="logo-image">
@@ -396,7 +433,7 @@
     </header>
 
     <section class="hero">
-        <canvas id="prism-canvas"></canvas>
+        <canvas id="hero-canvas"></canvas>
         <div class="hero-content">
             <h1>Custom Software Solutions for NGOs</h1>
             <p>Building tools that help organizations evolve their services and reach more people</p>
@@ -407,37 +444,22 @@
         <h2>Active Projects</h2>
         <p class="section-description">Each application is built to solve real-world challenges faced by organisations
             working to make a difference.</p>
-        <div class="apps-grid" id="apps-container">
-            <!-- Apps will be dynamically generated here -->
-        </div>
+        <div class="apps-grid" id="apps-container"></div>
         <div class="about">
             <h2>About Lumina</h2>
-            <p class="section-description">
-                Lumina exists to build software for organisations doing real work—without forcing them to take on the
-                cost and
-                complexity of building and managing software teams.
-            </p>
-            <p class="section-description">
-                The focus is simple: design and deliver systems that hold up under real-world conditions. No templates,
-                no off-the-shelf
-                tools. Each platform is built around the way your organisation actually operates—whether that’s secure
-                reporting, field
-                coordination, or internal workflows where reliability matters.
-            </p>
-            <p class="section-description">
-                I work with a small number of organisations where the need is clear and the systems are critical. I
-                handle the full
-                engineering and delivery of the system. The build itself is fully covered.
-            </p>
-            <p class="section-description">
-                This requires direct collaboration, consistent input, and a willingness to replace fragile processes
-                with something more
-                dependable.
-            </p>
-            <p class="section-description">
-                If your current systems are limiting how you operate—or you’re relying on workarounds that shouldn’t
-                exist—let’s talk.
-            </p>
+            <p class="section-description">Lumina exists to build software for organisations doing real work—without
+                forcing them to take on the cost and complexity of building and managing software teams.</p>
+            <p class="section-description">The focus is simple: design and deliver systems that hold up under real-world
+                conditions. No templates, no off-the-shelf tools. Each platform is built around the way your
+                organisation actually operates—whether that's secure reporting, field coordination, or internal
+                workflows where reliability matters.</p>
+            <p class="section-description">I work with a small number of organisations where the need is clear and the
+                systems are critical. I handle the full engineering and delivery of the system. The build itself is
+                fully covered.</p>
+            <p class="section-description">This requires direct collaboration, consistent input, and a willingness to
+                replace fragile processes with something more dependable.</p>
+            <p class="section-description">If your current systems are limiting how you operate—or you're relying on
+                workarounds that shouldn't exist—let's talk.</p>
         </div>
     </section>
 
@@ -462,207 +484,242 @@
         <a href="mailto:wothando@luminaholdings.co.za" class="email-link">wothando@luminaholdings.co.za</a>
     </section>
 
-    <canvas id="prism-canvas"
-        style="position:absolute;top:0;left:0;width:100%;height:100%;z-index:1;cursor:none;"></canvas>
-    <div id="halo"
-        style="position:fixed;width:60px;height:60px;border-radius:50%;background:radial-gradient(circle,rgba(99,102,241,0.35) 0%,rgba(168,85,247,0.12) 50%,transparent 70%);pointer-events:none;transform:translate(-50%,-50%);mix-blend-mode:screen;z-index:9999;transition:opacity 0.2s;">
-    </div>
-    <div id="dot"
-        style="position:fixed;width:8px;height:8px;border-radius:50%;background:#a855f7;pointer-events:none;transform:translate(-50%,-50%);z-index:10000;box-shadow:0 0 6px #6366f1;">
-    </div>
-
     <script>
-        const canvas = document.getElementById('prism-canvas');
-        const ctx = canvas.getContext('2d');
-        const halo = document.getElementById('halo');
-        const dot = document.getElementById('dot');
+        // ── Platform icons ──
+        const icons = {
+            ios: `<svg viewBox="0 0 24 24"><path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.8-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M13 3.5c.73-.83 1.94-1.46 2.94-1.5.13 1.17-.34 2.35-1.04 3.19-.69.85-1.83 1.51-2.95 1.42-.15-1.15.41-2.35 1.05-3.11z"/></svg>`,
+            android: `<svg viewBox="0 0 24 24"><path d="M17.523 15.341a.5.5 0 0 1-.5.5H6.977a.5.5 0 0 1-.5-.5V9.115c0-.276.224-.5.5-.5h10.046c.276 0 .5.224.5.5v6.226zM7.5 17.5a.5.5 0 0 0 .5.5h.5v2a.75.75 0 0 0 1.5 0v-2h4v2a.75.75 0 0 0 1.5 0v-2h.5a.5.5 0 0 0 .5-.5v-.659H7.5v.659zM14.829 4.308l.885-1.763a.25.25 0 0 0-.447-.224l-.896 1.791A5.948 5.948 0 0 0 12 3.75c-.835 0-1.628.174-2.371.362L8.733 2.321a.25.25 0 0 0-.447.224l.885 1.763C7.247 5.259 6.25 6.9 6.25 8.75h11.5c0-1.85-.997-3.491-2.921-4.442zM10 7a.75.75 0 1 1 0-1.5A.75.75 0 0 1 10 7zm4 0a.75.75 0 1 1 0-1.5A.75.75 0 0 1 14 7z"/></svg>`,
+            web: `<svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z"/></svg>`
+        };
+        const apps = [
+            { title: "GBV Safety App", platforms: ["ios", "android"], description: "Secure evidence vault, instant SOS alerts, reporting tools, a decoy interface, and clear legal and crisis resources — all in one protected, easy-to-use space for survivors of gender-based violence.", videoUrl: "https://www.youtube.com/shorts/obar6YU03Iw" },
+            { title: "Food Transparency Scanner", platforms: ["ios", "android"], description: "Scan barcodes for instant health recommendations. Breaks down complex ingredients into simple English, helping people make informed choices about what they eat.", videoUrl: "https://www.youtube.com/shorts/S-kYKuDZ5Lk" },
+            { title: "NFO Remuneration Web App", platforms: ["web"], description: "A centralised, role-based web application that replaces Excel and email-driven salary reviews with a structured, auditable workflow — enabling HR to manage remuneration cycles and budgets, division managers to submit salary and bonus proposals, and executives to monitor real-time budget usage and approve decisions.", videoUrl: "https://youtu.be/NLxN1rpCx14" }
+        ];
+        const platformLabels = { ios: "iOS", android: "Android", web: "Web App" };
+        function generateAppCards() {
+            const container = document.getElementById('apps-container');
+            const ytIcon = `<svg class="youtube-icon" viewBox="0 0 24 24" fill="currentColor"><path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/></svg>`;
+            apps.forEach(app => {
+                const tagsHTML = app.platforms.map(p => `<span class="platform-tag">${icons[p]}${platformLabels[p]}</span>`).join('');
+                const card = document.createElement('div');
+                card.className = 'app-card';
+                card.innerHTML = `<div class="platform-tags">${tagsHTML}</div><h3>${app.title}</h3><p>${app.description}</p><a href="${app.videoUrl}" class="video-link">${ytIcon} Watch Demo</a>`;
+                container.appendChild(card);
+            });
+        }
+        generateAppCards();
 
-        let W, H, cx, cy, mouse = { x: 0, y: 0 }, t = 0;
+        // ── Custom Cursor ──
+        const cursorHalo = document.getElementById('cursor-halo');
+        const cursorDot = document.getElementById('cursor-dot');
+        let mx = window.innerWidth / 2, my = window.innerHeight / 2;
+        let haloX = mx, haloY = my;
+        document.addEventListener('mousemove', e => { mx = e.clientX; my = e.clientY; });
+        function animateCursor() {
+            haloX += (mx - haloX) * 0.12;
+            haloY += (my - haloY) * 0.12;
+            cursorHalo.style.left = haloX + 'px';
+            cursorHalo.style.top = haloY + 'px';
+            cursorDot.style.left = mx + 'px';
+            cursorDot.style.top = my + 'px';
+            requestAnimationFrame(animateCursor);
+        }
+        animateCursor();
+
+        // ── Canvas Animation ──
+        const canvas = document.getElementById('hero-canvas');
+        const ctx = canvas.getContext('2d');
+        let W, H, CX, CY, t = 0;
 
         function resize() {
-            W = canvas.width = window.innerWidth;
-            H = canvas.height = window.innerHeight;
-            cx = W / 2; cy = H / 2;
+            W = canvas.width = canvas.offsetWidth;
+            H = canvas.height = canvas.offsetHeight;
+            CX = W / 2; CY = H / 2;
+            initNodes();
         }
-        resize();
-        window.addEventListener('resize', resize);
 
-        document.addEventListener('mousemove', e => {
-            mouse.x = e.clientX; mouse.y = e.clientY;
-            halo.style.left = e.clientX + 'px';
-            halo.style.top = e.clientY + 'px';
-            dot.style.left = e.clientX + 'px';
-            dot.style.top = e.clientY + 'px';
-        });
+        // Nodes — fill full canvas, higher density
+        const NODE_COUNT = 130;
+        const CONNECT_DIST = 160;
+        const MOUSE_RADIUS = 130;
+        let nodes = [];
 
-        const NODE_COUNT = 70;
-        const CONNECT_DIST = 110;
-        const nodes = Array.from({ length: NODE_COUNT }, () => ({
-            x: Math.random() * window.innerWidth,
-            y: Math.random() * window.innerHeight,
-            vx: (Math.random() - 0.5) * 0.4,
-            vy: (Math.random() - 0.5) * 0.4,
-            r: 1.5 + Math.random() * 2,
-            bright: 0
-        }));
+        function initNodes() {
+            nodes = Array.from({ length: NODE_COUNT }, () => ({
+                x: Math.random() * W,
+                y: Math.random() * H,
+                vx: (Math.random() - 0.5) * 0.55,
+                vy: (Math.random() - 0.5) * 0.55,
+                r: 1.8 + Math.random() * 2.2,
+                bright: 0,
+                hue: 220 + Math.random() * 80
+            }));
+        }
 
+        // Orbital rings centered on canvas center
         const rings = [
-            { r: 110, nodeCount: 9, speed: 0.003, phase: 0, color: [99, 102, 241] },
-            { r: 170, nodeCount: 13, speed: -0.0019, phase: 1.1, color: [168, 85, 247] },
-            { r: 230, nodeCount: 18, speed: 0.0013, phase: 2.4, color: [59, 130, 246] }
+            { r: 90, nodeCount: 10, speed: 0.0045, phase: 0, cr: 99, cg: 102, cb: 241 },
+            { r: 148, nodeCount: 15, speed: -0.0028, phase: 1.2, cr: 168, cg: 85, cb: 247 },
+            { r: 205, nodeCount: 20, speed: 0.0018, phase: 2.5, cr: 56, cg: 189, cb: 248 },
         ];
 
-        const gears = [
-            { x: 0, y: 0, r: 52, teeth: 12, rot: 0, speed: 0.012, color: '#6366f1', inner: 16 },
-            { x: 88, y: 18, r: 34, teeth: 8, rot: 0.39, speed: -0.018, color: '#a855f7', inner: 10 },
-            { x: -82, y: 22, r: 28, teeth: 7, rot: 0.5, speed: 0.022, color: '#3b82f6', inner: 8 },
-            { x: 20, y: -76, r: 24, teeth: 6, rot: 1.0, speed: -0.028, color: '#fbbf24', inner: 7 },
-            { x: -30, y: 72, r: 20, teeth: 5, rot: 0.3, speed: 0.034, color: '#ec4899', inner: 6 },
+        // Gears — vibrant colors, centered
+        const gearDefs = [
+            { ox: 0, oy: 0, r: 48, teeth: 12, speed: 0.013, color: '#22d3ee', glow: '34,211,238' },
+            { ox: 82, oy: 16, r: 32, teeth: 8, speed: -0.020, color: '#f472b6', glow: '244,114,182' },
+            { ox: -78, oy: 20, r: 26, teeth: 7, speed: 0.024, color: '#4ade80', glow: '74,222,128' },
+            { ox: 18, oy: -70, r: 22, teeth: 6, speed: -0.031, color: '#fb923c', glow: '251,146,60' },
+            { ox: -28, oy: 68, r: 18, teeth: 5, speed: 0.038, color: '#facc15', glow: '250,204,21' },
         ];
+        const gearState = gearDefs.map(g => ({ ...g, rot: Math.random() * Math.PI * 2 }));
 
-        function drawGear(g, mx, my) {
-            const gx = cx + g.x, gy = cy + g.y;
-            const toothH = g.r * 0.22;
-            const toothW = (2 * Math.PI / g.teeth) * 0.42;
+        function drawGear(g) {
+            const gx = CX + g.ox, gy = CY + g.oy;
+            const toothH = g.r * 0.24;
+            const toothW = (2 * Math.PI / g.teeth) * 0.4;
             const dx = mx - gx, dy = my - gy;
             const dist = Math.sqrt(dx * dx + dy * dy);
-            const pull = Math.max(0, 1 - dist / 300);
+            const mousePull = Math.max(0, 1 - dist / 260);
 
             ctx.save();
             ctx.translate(gx, gy);
             ctx.rotate(g.rot);
 
-            const grd = ctx.createRadialGradient(0, 0, g.r * 0.5, 0, 0, g.r + toothH + 8);
-            grd.addColorStop(0, g.color + '55');
+            // glow halo
+            const grd = ctx.createRadialGradient(0, 0, g.r * 0.4, 0, 0, g.r + toothH + 14);
+            grd.addColorStop(0, `rgba(${g.glow},${0.35 + mousePull * 0.3})`);
             grd.addColorStop(1, 'transparent');
-            ctx.fillStyle = grd;
-            ctx.beginPath(); ctx.arc(0, 0, g.r + toothH + 8, 0, Math.PI * 2); ctx.fill();
+            ctx.beginPath(); ctx.arc(0, 0, g.r + toothH + 14, 0, Math.PI * 2);
+            ctx.fillStyle = grd; ctx.fill();
 
+            // gear teeth path
             ctx.beginPath();
             for (let i = 0; i < g.teeth; i++) {
                 const a = (i / g.teeth) * Math.PI * 2;
                 const a1 = a - toothW / 2, a2 = a + toothW / 2;
                 ctx.lineTo(Math.cos(a1) * g.r, Math.sin(a1) * g.r);
-                ctx.lineTo(Math.cos(a - toothW * 0.1) * (g.r + toothH), Math.sin(a - toothW * 0.1) * (g.r + toothH));
-                ctx.lineTo(Math.cos(a + toothW * 0.1) * (g.r + toothH), Math.sin(a + toothW * 0.1) * (g.r + toothH));
+                ctx.lineTo(Math.cos(a - toothW * 0.08) * (g.r + toothH), Math.sin(a - toothW * 0.08) * (g.r + toothH));
+                ctx.lineTo(Math.cos(a + toothW * 0.08) * (g.r + toothH), Math.sin(a + toothW * 0.08) * (g.r + toothH));
                 ctx.lineTo(Math.cos(a2) * g.r, Math.sin(a2) * g.r);
             }
             ctx.closePath();
-            ctx.fillStyle = g.color + (pull > 0.1 ? 'cc' : '88');
+            const alpha = mousePull > 0.05 ? 'dd' : '99';
+            ctx.fillStyle = g.color + alpha;
             ctx.strokeStyle = g.color + 'ff';
-            ctx.lineWidth = 1.2;
-            ctx.fill(); ctx.stroke();
-
-            ctx.beginPath(); ctx.arc(0, 0, g.inner, 0, Math.PI * 2);
-            ctx.fillStyle = '#0a0a0a';
-            ctx.strokeStyle = g.color + 'aa';
             ctx.lineWidth = 1.5;
             ctx.fill(); ctx.stroke();
 
+            // inner ring
+            ctx.beginPath(); ctx.arc(0, 0, g.r * 0.42, 0, Math.PI * 2);
+            ctx.fillStyle = '#0a0a0a';
+            ctx.strokeStyle = g.color + 'bb';
+            ctx.lineWidth = 1.8;
+            ctx.fill(); ctx.stroke();
+
+            // center dot
+            ctx.beginPath(); ctx.arc(0, 0, g.r * 0.12, 0, Math.PI * 2);
+            ctx.fillStyle = g.color;
+            ctx.fill();
+
+            // spokes
             for (let i = 0; i < 4; i++) {
                 const sa = (i / 4) * Math.PI * 2;
                 ctx.beginPath();
-                ctx.moveTo(Math.cos(sa) * g.inner, Math.sin(sa) * g.inner);
-                ctx.lineTo(Math.cos(sa) * (g.r * 0.75), Math.sin(sa) * (g.r * 0.75));
-                ctx.strokeStyle = g.color + '66';
-                ctx.lineWidth = 2;
+                ctx.moveTo(Math.cos(sa) * g.r * 0.14, Math.sin(sa) * g.r * 0.14);
+                ctx.lineTo(Math.cos(sa) * g.r * 0.78, Math.sin(sa) * g.r * 0.78);
+                ctx.strokeStyle = g.color + '77';
+                ctx.lineWidth = 2.2;
                 ctx.stroke();
             }
+
             ctx.restore();
         }
 
-        function drawRays(mx, my) {
-            const pulse = 0.7 + 0.3 * Math.sin(t * 1.8);
-            const angleToMouse = Math.atan2(my - cy, mx - cx);
-            const distToMouse = Math.min(Math.sqrt((mx - cx) ** 2 + (my - cy) ** 2), 500);
-            const bend = distToMouse / 500;
+        function drawRays() {
+            const pulse = 0.65 + 0.35 * Math.sin(t * 1.9);
+            const angleToMouse = Math.atan2(my - CY, mx - CX);
+            const distToMouse = Math.min(Math.sqrt((mx - CX) ** 2 + (my - CY) ** 2), 600);
+            const bend = distToMouse / 600;
 
-            for (let i = 0; i < 12; i++) {
-                const baseAngle = (i / 12) * Math.PI * 2 + t * 0.15;
-                const bendAmount = bend * 0.7 * Math.cos(baseAngle - angleToMouse);
-                const angle = baseAngle + bendAmount;
-                const rayLen = (80 + 140 * pulse + 60 * Math.sin(t * 2 + i)) * (0.6 + 0.4 * bend);
-                const rayStart = 30;
-
-                const x1 = cx + Math.cos(angle) * rayStart;
-                const y1 = cy + Math.sin(angle) * rayStart;
-                const x2 = cx + Math.cos(angle) * (rayStart + rayLen);
-                const y2 = cy + Math.sin(angle) * (rayStart + rayLen);
-
+            for (let i = 0; i < 14; i++) {
+                const baseAngle = (i / 14) * Math.PI * 2 + t * 0.13;
+                const bendAmt = bend * 0.85 * Math.cos(baseAngle - angleToMouse);
+                const angle = baseAngle + bendAmt;
+                const rayLen = (70 + 160 * pulse + 70 * Math.sin(t * 2.2 + i * 0.6)) * (0.55 + 0.45 * bend);
+                const rs = 28;
+                const x1 = CX + Math.cos(angle) * rs, y1 = CY + Math.sin(angle) * rs;
+                const x2 = CX + Math.cos(angle) * (rs + rayLen), y2 = CY + Math.sin(angle) * (rs + rayLen);
                 const grad = ctx.createLinearGradient(x1, y1, x2, y2);
-                const hue = 230 + (i / 12) * 80;
-                grad.addColorStop(0, `hsla(${hue},80%,65%,${0.55 * pulse})`);
-                grad.addColorStop(0.5, `hsla(${hue + 20},75%,60%,${0.3 * pulse})`);
+                const hue = 225 + (i / 14) * 90;
+                grad.addColorStop(0, `hsla(${hue},85%,68%,${0.6 * pulse})`);
+                grad.addColorStop(0.45, `hsla(${hue + 25},78%,62%,${0.32 * pulse})`);
                 grad.addColorStop(1, 'transparent');
-
-                ctx.beginPath();
-                ctx.moveTo(x1, y1); ctx.lineTo(x2, y2);
+                ctx.beginPath(); ctx.moveTo(x1, y1); ctx.lineTo(x2, y2);
                 ctx.strokeStyle = grad;
-                ctx.lineWidth = 1.5 + 1.5 * Math.sin(t * 3 + i);
+                ctx.lineWidth = 1.2 + 1.8 * Math.abs(Math.sin(t * 3.1 + i));
                 ctx.stroke();
             }
         }
 
         function drawCore() {
-            const p = 0.5 + 0.5 * Math.sin(t * 2.2);
-            const g = ctx.createRadialGradient(cx, cy, 2, cx, cy, 60);
-            g.addColorStop(0, `rgba(255,200,80,${0.9 + 0.1 * p})`);
-            g.addColorStop(0.15, `rgba(255,160,40,${0.7 * p})`);
-            g.addColorStop(0.4, `rgba(99,102,241,${0.4 * p})`);
+            const p = 0.5 + 0.5 * Math.sin(t * 2.4);
+            const g = ctx.createRadialGradient(CX, CY, 2, CX, CY, 65);
+            g.addColorStop(0, `rgba(255,210,90,${0.95})`);
+            g.addColorStop(0.12, `rgba(255,165,40,${0.75 * p})`);
+            g.addColorStop(0.38, `rgba(99,102,241,${0.45 * p})`);
             g.addColorStop(1, 'transparent');
-            ctx.beginPath(); ctx.arc(cx, cy, 60, 0, Math.PI * 2);
+            ctx.beginPath(); ctx.arc(CX, CY, 65, 0, Math.PI * 2);
             ctx.fillStyle = g; ctx.fill();
-
-            ctx.beginPath(); ctx.arc(cx, cy, 8 + 3 * p, 0, Math.PI * 2);
-            ctx.fillStyle = `rgba(255,240,160,${0.95 + 0.05 * p})`;
-            ctx.fill();
+            ctx.beginPath(); ctx.arc(CX, CY, 7 + 3 * p, 0, Math.PI * 2);
+            ctx.fillStyle = `rgba(255,245,170,0.98)`; ctx.fill();
         }
 
-        function drawOrbits(mx, my) {
+        function drawOrbits() {
             rings.forEach(ring => {
-                const dx = mx - cx, dy = my - cy;
-                const dist = Math.sqrt(dx * dx + dy * dy);
-                const influence = Math.max(0, 1 - dist / 400);
-                const [r, g, b] = ring.color;
-
                 ctx.beginPath();
-                ctx.arc(cx, cy, ring.r, 0, Math.PI * 2);
-                ctx.strokeStyle = `rgba(${r},${g},${b},0.12)`;
-                ctx.lineWidth = 0.8;
-                ctx.stroke();
+                ctx.arc(CX, CY, ring.r, 0, Math.PI * 2);
+                ctx.strokeStyle = `rgba(${ring.cr},${ring.cg},${ring.cb},0.1)`;
+                ctx.lineWidth = 0.7; ctx.stroke();
 
                 for (let i = 0; i < ring.nodeCount; i++) {
                     const a = (i / ring.nodeCount) * Math.PI * 2 + ring.phase;
-                    const nx = cx + Math.cos(a) * ring.r;
-                    const ny = cy + Math.sin(a) * ring.r;
+                    const nx = CX + Math.cos(a) * ring.r;
+                    const ny = CY + Math.sin(a) * ring.r;
                     const ndx = mx - nx, ndy = my - ny;
                     const nd = Math.sqrt(ndx * ndx + ndy * ndy);
-                    const lit = Math.max(0, 1 - nd / 80);
-                    const sz = 2.5 + 3 * lit + 1.5 * influence;
-                    const alpha = 0.5 + 0.5 * lit;
+                    const lit = Math.max(0, 1 - nd / MOUSE_RADIUS);
+                    const sz = 2.2 + 3.5 * lit;
+                    const alpha = 0.45 + 0.55 * lit;
 
-                    const ng = ctx.createRadialGradient(nx, ny, 0, nx, ny, sz * 2.5);
-                    ng.addColorStop(0, `rgba(${r},${g},${b},${alpha})`);
+                    const ng = ctx.createRadialGradient(nx, ny, 0, nx, ny, sz * 3);
+                    ng.addColorStop(0, `rgba(${ring.cr},${ring.cg},${ring.cb},${alpha})`);
                     ng.addColorStop(1, 'transparent');
-                    ctx.beginPath(); ctx.arc(nx, ny, sz * 2.5, 0, Math.PI * 2);
+                    ctx.beginPath(); ctx.arc(nx, ny, sz * 3, 0, Math.PI * 2);
                     ctx.fillStyle = ng; ctx.fill();
 
                     ctx.beginPath(); ctx.arc(nx, ny, sz, 0, Math.PI * 2);
-                    ctx.fillStyle = `rgba(${r},${g},${b},${alpha})`;
+                    ctx.fillStyle = `rgba(${ring.cr},${ring.cg},${ring.cb},${alpha})`;
                     ctx.fill();
                 }
             });
         }
 
-        function drawNeural(mx, my) {
+        function drawNeural() {
+            // Update nodes
             nodes.forEach(n => {
                 n.x += n.vx; n.y += n.vy;
-                if (n.x < 0 || n.x > W) n.vx *= -1;
-                if (n.y < 0 || n.y > H) n.vy *= -1;
+                // wrap around edges so network always fills full width/height
+                if (n.x < -10) n.x = W + 10;
+                else if (n.x > W + 10) n.x = -10;
+                if (n.y < -10) n.y = H + 10;
+                else if (n.y > H + 10) n.y = -10;
                 const d = Math.sqrt((n.x - mx) ** 2 + (n.y - my) ** 2);
-                n.bright = Math.max(n.bright * 0.93, d < 90 ? 1 - d / 90 : 0);
+                const target = d < MOUSE_RADIUS ? (1 - d / MOUSE_RADIUS) : 0;
+                n.bright += (target - n.bright) * 0.08;
             });
 
+            // Connections
             for (let i = 0; i < nodes.length; i++) {
                 for (let j = i + 1; j < nodes.length; j++) {
                     const a = nodes[i], b = nodes[j];
@@ -670,26 +727,30 @@
                     const d = Math.sqrt(dx * dx + dy * dy);
                     if (d < CONNECT_DIST) {
                         const combined = Math.max(a.bright, b.bright);
-                        const base = (1 - d / CONNECT_DIST) * 0.18;
-                        const bright = base + combined * 0.55;
-                        const hue = 230 + combined * 60;
+                        const proximity = 1 - d / CONNECT_DIST;
+                        const base = proximity * 0.22;
+                        const bright = base + combined * 0.65;
+                        const hue = 225 + combined * 75;
                         ctx.beginPath();
                         ctx.moveTo(a.x, a.y); ctx.lineTo(b.x, b.y);
-                        ctx.strokeStyle = `hsla(${hue},80%,70%,${bright})`;
-                        ctx.lineWidth = 0.5 + combined * 1.2;
+                        ctx.strokeStyle = `hsla(${hue},82%,72%,${bright})`;
+                        ctx.lineWidth = 0.4 + combined * 1.8 + proximity * 0.4;
                         ctx.stroke();
                     }
                 }
             }
 
+            // Node dots
             nodes.forEach(n => {
-                const grd = ctx.createRadialGradient(n.x, n.y, 0, n.x, n.y, n.r * 3 + n.bright * 12);
-                grd.addColorStop(0, `rgba(168,85,247,${0.7 + n.bright * 0.3})`);
+                const glowR = n.r * 3.5 + n.bright * 18;
+                const grd = ctx.createRadialGradient(n.x, n.y, 0, n.x, n.y, glowR);
+                grd.addColorStop(0, `hsla(${n.hue},80%,75%,${0.65 + n.bright * 0.35})`);
                 grd.addColorStop(1, 'transparent');
-                ctx.beginPath(); ctx.arc(n.x, n.y, n.r * 3 + n.bright * 12, 0, Math.PI * 2);
+                ctx.beginPath(); ctx.arc(n.x, n.y, glowR, 0, Math.PI * 2);
                 ctx.fillStyle = grd; ctx.fill();
-                ctx.beginPath(); ctx.arc(n.x, n.y, n.r + n.bright * 3, 0, Math.PI * 2);
-                ctx.fillStyle = `rgba(200,160,255,${0.6 + n.bright * 0.4})`;
+
+                ctx.beginPath(); ctx.arc(n.x, n.y, n.r + n.bright * 3.5, 0, Math.PI * 2);
+                ctx.fillStyle = `hsla(${n.hue},90%,80%,${0.55 + n.bright * 0.45})`;
                 ctx.fill();
             });
         }
@@ -702,51 +763,48 @@
             ctx.fillStyle = '#0a0a0a';
             ctx.fillRect(0, 0, W, H);
 
-            const mx = mouse.x || cx, my = mouse.y || cy;
-
-            drawNeural(mx, my);
-            drawRays(mx, my);
-            drawOrbits(mx, my);
-            gears.forEach(g => { g.rot += g.speed; drawGear(g, mx, my); });
+            drawNeural();
+            drawRays();
+            drawOrbits();
+            gearState.forEach(g => { g.rot += g.speed; drawGear(g); });
             rings.forEach(r => { r.phase += r.speed; });
             drawCore();
         }
 
+        window.addEventListener('resize', resize);
+        resize();
         frame();
 
-        // Scroll hide/show header (kept from original)
-        let lastScrollTop = 0;
-        const header = document.querySelector('header');
-        const scrollThreshold = 100;
-        let scrollTimeout, isScrolling = false;
+        // ── Intersection observer for cards ──
+        const observer = new IntersectionObserver(entries => {
+            entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
+        }, { threshold: 0.1 });
+        document.querySelectorAll('.app-card').forEach(c => observer.observe(c));
 
-        window.addEventListener('scroll', () => {
-            const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
-            clearTimeout(scrollTimeout);
-            const scrollDelta = scrollTop - lastScrollTop;
-            if (scrollTop > scrollThreshold) {
-                if (scrollDelta > 10 && !isScrolling) { isScrolling = true; header.classList.add('header-hidden'); }
-                else if (scrollDelta < -10 && isScrolling) { isScrolling = false; header.classList.remove('header-hidden'); }
-            } else { isScrolling = false; header.classList.remove('header-hidden'); }
-            scrollTimeout = setTimeout(() => {
-                if (scrollTop > scrollThreshold && isScrolling) { header.classList.remove('header-hidden'); isScrolling = false; }
-            }, 1500);
-            lastScrollTop = scrollTop <= 0 ? 0 : scrollTop;
+        // ── Smooth scroll ──
+        document.querySelectorAll('a[href^="#"]').forEach(a => {
+            a.addEventListener('click', function (e) {
+                e.preventDefault();
+                const t = document.querySelector(this.getAttribute('href'));
+                if (t) t.scrollIntoView({ behavior: 'smooth' });
+            });
         });
 
-        // Intersection observer for app cards
-        const observer = new IntersectionObserver((entries) => {
-            entries.forEach(entry => { if (entry.isIntersecting) entry.target.classList.add('visible'); });
-        }, { threshold: 0.1 });
-        document.querySelectorAll('.app-card').forEach(card => observer.observe(card));
-
-        // Smooth scroll
-        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-            anchor.addEventListener('click', function (e) {
-                e.preventDefault();
-                const target = document.querySelector(this.getAttribute('href'));
-                if (target) target.scrollIntoView({ behavior: 'smooth' });
-            });
+        // ── Header hide/show ──
+        let lastST = 0, isScrolling = false, scrollTO;
+        const header = document.querySelector('header');
+        window.addEventListener('scroll', () => {
+            const st = window.pageYOffset || document.documentElement.scrollTop;
+            clearTimeout(scrollTO);
+            const delta = st - lastST;
+            if (st > 100) {
+                if (delta > 10 && !isScrolling) { isScrolling = true; header.classList.add('header-hidden'); }
+                else if (delta < -10 && isScrolling) { isScrolling = false; header.classList.remove('header-hidden'); }
+            } else { isScrolling = false; header.classList.remove('header-hidden'); }
+            scrollTO = setTimeout(() => {
+                if (st > 100 && isScrolling) { header.classList.remove('header-hidden'); isScrolling = false; }
+            }, 1500);
+            lastST = st <= 0 ? 0 : st;
         });
     </script>
 </body>
