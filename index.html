@@ -84,25 +84,30 @@
             letter-spacing: 2px;
         }
 
+        /* Canvas sits fixed behind everything, full viewport */
+        #hero-canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            z-index: 0;
+            pointer-events: none;
+            transition: opacity 0.6s ease;
+        }
+
+        /* Hero is full-viewport width, transparent so fixed canvas shows through */
         .hero {
             position: relative;
+            z-index: 1;
+            width: 100%;
             height: 100vh;
             display: flex;
             flex-direction: column;
             justify-content: center;
             align-items: center;
             text-align: center;
-            overflow: hidden;
-        }
-
-        #hero-canvas {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            z-index: 1;
-            display: block;
+            background: transparent;
         }
 
         .hero-content {
@@ -131,7 +136,11 @@
             animation: fadeInUp 1s ease-out 0.2s backwards;
         }
 
+        /* All content sections sit above the fixed canvas with a solid bg */
         section {
+            position: relative;
+            z-index: 2;
+            background: #0a0a0a;
             padding: 6rem 5%;
             max-width: 1200px;
             margin: 0 auto;
@@ -250,9 +259,13 @@
             margin-top: 3rem;
         }
 
+        /* Partners is a div, needs same stacking treatment as sections */
         .partners {
+            position: relative;
+            z-index: 2;
+            background: #0a0a0a;
             text-align: center;
-            padding-top: 2rem;
+            padding: 2rem 5% 6rem;
         }
 
         .partners h3 {
@@ -424,8 +437,10 @@
         </div>
     </header>
 
+    <!-- Canvas lives at body level, outside any clipping container -->
+    <canvas id="hero-canvas"></canvas>
+
     <section class="hero">
-        <canvas id="hero-canvas"></canvas>
         <div class="hero-content">
             <h1>Custom Software Solutions for NGOs</h1>
             <p>Building tools that help organizations evolve their services and reach more people</p>
@@ -455,7 +470,7 @@
         </div>
     </section>
 
-    <section class="partners">
+    <div class="partners">
         <h3>Current Partners</h3>
         <div class="partners-grid">
             <div class="partner-logo-card">
@@ -467,7 +482,7 @@
                 <p class="partner-tagline">Empowering youth through education and opportunity</p>
             </div>
         </div>
-    </section>
+    </div>
 
     <section id="contact" class="contact">
         <h2>Let's Work Together</h2>
@@ -479,7 +494,7 @@
     <script>
         (function () {
 
-            // ── App cards ────────────────────────────────────────────────────────────────
+            // ── App cards ──────────────────────────────────────────────────────────────
             var icons = {
                 ios: '<svg viewBox="0 0 24 24"><path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.8-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M13 3.5c.73-.83 1.94-1.46 2.94-1.5.13 1.17-.34 2.35-1.04 3.19-.69.85-1.83 1.51-2.95 1.42-.15-1.15.41-2.35 1.05-3.11z"/></svg>',
                 android: '<svg viewBox="0 0 24 24"><path d="M17.523 15.341a.5.5 0 0 1-.5.5H6.977a.5.5 0 0 1-.5-.5V9.115c0-.276.224-.5.5-.5h10.046c.276 0 .5.224.5.5v6.226zM7.5 17.5a.5.5 0 0 0 .5.5h.5v2a.75.75 0 0 0 1.5 0v-2h4v2a.75.75 0 0 0 1.5 0v-2h.5a.5.5 0 0 0 .5-.5v-.659H7.5v.659zM14.829 4.308l.885-1.763a.25.25 0 0 0-.447-.224l-.896 1.791A5.948 5.948 0 0 0 12 3.75c-.835 0-1.628.174-2.371.362L8.733 2.321a.25.25 0 0 0-.447.224l.885 1.763C7.247 5.259 6.25 6.9 6.25 8.75h11.5c0-1.85-.997-3.491-2.921-4.442zM10 7a.75.75 0 1 1 0-1.5A.75.75 0 0 1 10 7zm4 0a.75.75 0 1 1 0-1.5A.75.75 0 0 1 14 7z"/></svg>',
@@ -501,7 +516,7 @@
                 container.appendChild(card);
             });
 
-            // ── Custom cursor ─────────────────────────────────────────────────────────────
+            // ── Custom cursor ──────────────────────────────────────────────────────────
             var haloEl = document.getElementById('cursor-halo');
             var dotEl = document.getElementById('cursor-dot');
             var mx = window.innerWidth / 2, my = window.innerHeight / 2;
@@ -516,18 +531,11 @@
             }
             tickCursor();
 
-            // ── Canvas ────────────────────────────────────────────────────────────────────
+            // ── Canvas setup ───────────────────────────────────────────────────────────
+            // Canvas is position:fixed top:0 left:0 — canvas coords == clientX/Y exactly.
             var canvas = document.getElementById('hero-canvas');
             var ctx = canvas.getContext('2d');
             var W, H, CX, CY, T = 0;
-
-            // Canvas-local mouse: subtract the canvas's bounding rect from page mouse coords
-            var cmx, cmy;
-            document.addEventListener('mousemove', function (e) {
-                var r = canvas.getBoundingClientRect();
-                cmx = e.clientX - r.left;
-                cmy = e.clientY - r.top;
-            });
 
             var NODE_COUNT = 140;
             var CONNECT_DIST = 170;
@@ -553,7 +561,7 @@
                 W = canvas.width = window.innerWidth;
                 H = canvas.height = window.innerHeight;
                 CX = W / 2; CY = H / 2;
-                cmx = CX; cmy = CY;
+                mx = CX; my = CY;
                 initNodes();
             }
 
@@ -574,7 +582,7 @@
             function drawGear(g) {
                 var gx = CX + g.ox, gy = CY + g.oy;
                 var tH = g.r * 0.24, tW = (2 * Math.PI / g.teeth) * 0.4;
-                var ddx = cmx - gx, ddy = cmy - gy;
+                var ddx = mx - gx, ddy = my - gy;
                 var pull = Math.max(0, 1 - Math.sqrt(ddx * ddx + ddy * ddy) / 260);
 
                 ctx.save();
@@ -620,8 +628,8 @@
 
             function drawRays() {
                 var pulse = 0.65 + 0.35 * Math.sin(T * 1.9);
-                var am = Math.atan2(cmy - CY, cmx - CX);
-                var dm = Math.min(Math.sqrt((cmx - CX) * (cmx - CX) + (cmy - CY) * (cmy - CY)), 600);
+                var am = Math.atan2(my - CY, mx - CX);
+                var dm = Math.min(Math.sqrt((mx - CX) * (mx - CX) + (my - CY) * (my - CY)), 600);
                 var bend = dm / 600;
                 for (var i = 0; i < 14; i++) {
                     var ba = (i / 14) * Math.PI * 2 + T * 0.13;
@@ -663,7 +671,7 @@
                     for (var i = 0; i < rng.count; i++) {
                         var a = (i / rng.count) * Math.PI * 2 + rng.phase;
                         var nx = CX + Math.cos(a) * rng.r, ny = CY + Math.sin(a) * rng.r;
-                        var dx = cmx - nx, dy = cmy - ny;
+                        var dx = mx - nx, dy = my - ny;
                         var lit = Math.max(0, 1 - Math.sqrt(dx * dx + dy * dy) / MOUSE_R);
                         var sz = 2.2 + 3.5 * lit, al = 0.45 + 0.55 * lit;
                         var ng = ctx.createRadialGradient(nx, ny, 0, nx, ny, sz * 3);
@@ -680,11 +688,9 @@
                 for (var i = 0; i < nodes.length; i++) {
                     var n = nodes[i];
                     n.x += n.vx; n.y += n.vy;
-                    if (n.x < -10) n.x = W + 10;
-                    else if (n.x > W + 10) n.x = -10;
-                    if (n.y < -10) n.y = H + 10;
-                    else if (n.y > H + 10) n.y = -10;
-                    var dx = n.x - cmx, dy = n.y - cmy;
+                    if (n.x < -10) n.x = W + 10; else if (n.x > W + 10) n.x = -10;
+                    if (n.y < -10) n.y = H + 10; else if (n.y > H + 10) n.y = -10;
+                    var dx = n.x - mx, dy = n.y - my;
                     var d = Math.sqrt(dx * dx + dy * dy);
                     var tgt = d < MOUSE_R ? (1 - d / MOUSE_R) : 0;
                     n.bright += (tgt - n.bright) * 0.1;
@@ -718,11 +724,26 @@
                 }
             }
 
+            // ── Smooth canvas fade tied to hero scroll progress ────────────────────────
+            var heroEl = document.querySelector('.hero');
+            function updateCanvasOpacity() {
+                var heroH = heroEl.offsetHeight;
+                var scrollY = window.pageYOffset || document.documentElement.scrollTop;
+                // Start fading at 60% through hero scroll, fully gone at hero bottom
+                var fadeStart = heroH * 0.6;
+                var fadeEnd = heroH;
+                var opacity = 1 - Math.max(0, Math.min(1, (scrollY - fadeStart) / (fadeEnd - fadeStart)));
+                canvas.style.opacity = opacity;
+            }
+            window.addEventListener('scroll', updateCanvasOpacity, { passive: true });
+            updateCanvasOpacity();
+
             function frame() {
                 requestAnimationFrame(frame);
                 T += 0.016;
-                ctx.clearRect(0, 0, W, H);
-                ctx.fillStyle = '#0a0a0a'; ctx.fillRect(0, 0, W, H);
+                // Solid fill keeps node trails clean; CSS opacity handles the scroll fade
+                ctx.fillStyle = '#0a0a0a';
+                ctx.fillRect(0, 0, W, H);
                 drawNeural();
                 drawRays();
                 drawOrbits();
@@ -735,13 +756,13 @@
             resize();
             frame();
 
-            // ── Intersection observer ─────────────────────────────────────────────────────
+            // ── Intersection observer ──────────────────────────────────────────────────
             var io = new IntersectionObserver(function (entries) {
                 entries.forEach(function (e) { if (e.isIntersecting) e.target.classList.add('visible'); });
             }, { threshold: 0.1 });
             document.querySelectorAll('.app-card').forEach(function (c) { io.observe(c); });
 
-            // ── Smooth scroll ─────────────────────────────────────────────────────────────
+            // ── Smooth scroll ──────────────────────────────────────────────────────────
             document.querySelectorAll('a[href^="#"]').forEach(function (a) {
                 a.addEventListener('click', function (e) {
                     e.preventDefault();
@@ -750,7 +771,7 @@
                 });
             });
 
-            // ── Header hide / show ────────────────────────────────────────────────────────
+            // ── Header hide / show ─────────────────────────────────────────────────────
             var lastST = 0, scrolling = false, scrollTimer = null;
             var header = document.querySelector('header');
             window.addEventListener('scroll', function () {
@@ -760,7 +781,10 @@
                 if (st > 100) {
                     if (delta > 10 && !scrolling) { scrolling = true; header.classList.add('header-hidden'); }
                     if (delta < -10 && scrolling) { scrolling = false; header.classList.remove('header-hidden'); }
-                } else { scrolling = false; header.classList.remove('header-hidden'); }
+                } else {
+                    scrolling = false;
+                    header.classList.remove('header-hidden');
+                }
                 scrollTimer = setTimeout(function () {
                     if (st > 100 && scrolling) { header.classList.remove('header-hidden'); scrolling = false; }
                 }, 1500);
